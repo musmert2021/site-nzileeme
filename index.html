@@ -3,224 +3,272 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KALE - Nexus Enterprise Ultimate Command Center</title>
+    <title>KALE Bot - Nexus Enterprise Ultimate Command Center</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #313338; color: #dbdee1; }
-        .discord-card { background-color: #2b2d31; border: 1px solid #1f2023; }
-        .discord-input { background-color: #1e1f22; border: 1px solid #383a40; color: #f2f3f5; }
-        .discord-input:focus { border-color: #5865f2; outline: none; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #18191c; color: #dbdee1; }
+        .sidebar { background-color: #2b2d31; }
+        .card-bg { background-color: #313338; border: 1px solid #383a40; }
+        .input-dark { background-color: #1e1f22; border: 1px solid #383a40; color: #fff; }
+        .input-dark:focus { border-color: #5865f2; outline: none; }
         ::-webkit-scrollbar { width: 8px; height: 8px; }
         ::-webkit-scrollbar-track { background: #2b2d31; }
         ::-webkit-scrollbar-thumb { background: #1e1f22; border-radius: 4px; }
     </style>
 </head>
-<body class="min-h-screen flex flex-col">
+<body class="min-h-screen flex">
 
-    <!-- Üst Header Bar -->
-    <header class="bg-[#2b2d31] border-b border-[#1f2023] px-6 py-4 flex justify-between items-center sticky top-0 z-50 shadow-md">
-        <div class="flex items-center space-x-3">
-            <div class="w-10 h-10 rounded-xl bg-[#5865f2] flex items-center justify-center text-white font-bold text-xl shadow-lg">
-                <i class="fa-solid fa-chess-rook"></i>
-            </div>
+    <!-- Sol Sidebar Menü -->
+    <aside class="sidebar w-72 hidden md:flex flex-col border-r border-[#1f2023] p-4 space-y-6 select-none">
+        <div class="flex items-center space-x-3 px-2 py-2">
+            <div class="w-10 h-10 rounded-2xl bg-[#5865f2] flex items-center justify-center text-white font-bold text-xl shadow-lg">🏰</div>
             <div>
-                <h1 class="font-bold text-white text-lg tracking-wide">KALE <span class="text-xs bg-[#5865f2]/20 text-[#5865f2] px-2.5 py-0.5 rounded-md font-semibold border border-[#5865f2]/30">ULTIMATE v2.0</span></h1>
-                <p class="text-[11px] text-[#949ba4]">Nexus Enterprise &bull; Tam Kapsamlı Komut ve Yönetim Katmanı</p>
+                <h2 class="font-bold text-white text-base tracking-wider">KALE BOT</h2>
+                <p class="text-[10px] text-[#949ba4]">Nexus Enterprise Ultimate</p>
             </div>
         </div>
-        <div class="flex items-center space-x-4">
-            <div class="flex items-center space-x-2 bg-[#1e1f22] px-3.5 py-2 rounded-xl border border-[#383a40]">
-                <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                <span class="text-xs text-white font-medium">Altare Cloud: Çevrimiçi</span>
+
+        <div class="text-[10px] font-bold text-[#949ba4] px-2 uppercase tracking-wider">YÖNETİM MENÜSÜ</div>
+        <nav class="space-y-1.5 flex-1 overflow-y-auto pr-1">
+            <button onclick="switchPage('home')" id="nav_home" class="w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl bg-[#5865f2] text-white text-xs font-semibold transition shadow-md"><i class="fa-solid fa-house w-5 text-sm"></i><span>Genel Bakış & Durum</span></button>
+            <button onclick="switchPage('mod')" id="nav_mod" class="w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-[#949ba4] hover:bg-[#35373c] hover:text-white text-xs font-semibold transition"><i class="fa-solid fa-gavel w-5 text-sm"></i><span>Moderasyon Komutları</span></button>
+            <button onclick="switchPage('prot')" id="nav_prot" class="w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-[#949ba4] hover:bg-[#35373c] hover:text-white text-xs font-semibold transition"><i class="fa-solid fa-shield-halved w-5 text-sm"></i><span>Güvenlik & Anti-Raid</span></button>
+            <button onclick="switchPage('welcome')" id="nav_welcome" class="w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-[#949ba4] hover:bg-[#35373c] hover:text-white text-xs font-semibold transition"><i class="fa-solid fa-hand-peace w-5 text-sm"></i><span>Hoş Geldin & Rol Ayarı</span></button>
+            <button onclick="switchPage('level')" id="nav_level" class="w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-[#949ba4] hover:bg-[#35373c] hover:text-white text-xs font-semibold transition"><i class="fa-solid fa-chart-line w-5 text-sm"></i><span>Seviye (XP) Sistemi</span></button>
+            <button onclick="switchPage('ticket')" id="nav_ticket" class="w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-[#949ba4] hover:bg-[#35373c] hover:text-white text-xs font-semibold transition"><i class="fa-solid fa-ticket w-5 text-sm"></i><span>Destek / Ticket Paneli</span></button>
+            <button onclick="switchPage('music')" id="nav_music" class="w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-[#949ba4] hover:bg-[#35373c] hover:text-white text-xs font-semibold transition"><i class="fa-solid fa-music w-5 text-sm"></i><span>Müzik & Soundboard</span></button>
+            <button onclick="switchPage('settings')" id="nav_settings" class="w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-[#949ba4] hover:bg-[#35373c] hover:text-white text-xs font-semibold transition"><i class="fa-solid fa-gears w-5 text-sm"></i><span>Bot Sistem Ayarları</span></button>
+        </nav>
+
+        <div class="pt-4 border-t border-[#383a40]">
+            <div class="flex items-center space-x-3 px-2">
+                <div class="w-9 h-9 rounded-full bg-indigo-600 text-white flex items-center justify-center font-bold text-xs shadow">M</div>
+                <div class="overflow-hidden">
+                    <div class="text-xs font-bold text-white truncate">Musmert2027</div>
+                    <div class="text-[10px] text-emerald-400 flex items-center"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-1.5 animate-pulse"></span>Admin Oturumu</div>
+                </div>
             </div>
         </div>
-    </header>
+    </aside>
 
-    <!-- Ana Panel Alanı -->
-    <main class="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 space-y-6">
-        
-        <!-- Ana Navigasyon Sekmeleri -->
-        <div class="flex space-x-2 border-b border-[#383a40] pb-3 overflow-x-auto">
-            <button onclick="switchCategory('mod')" id="navMod" class="px-4 py-2.5 rounded-xl bg-[#5865f2] text-white text-xs font-semibold transition whitespace-nowrap shadow"><i class="fa-solid fa-gavel mr-1.5"></i> Moderasyon</button>
-            <button onclick="switchCategory('prot')" id="navProt" class="px-4 py-2.5 rounded-xl bg-[#2b2d31] text-[#949ba4] text-xs font-semibold hover:bg-[#35373c] hover:text-white transition whitespace-nowrap"><i class="fa-solid fa-shield-halved mr-1.5"></i> Güvenlik & Kilit</button>
-            <button onclick="switchCategory('music')" id="navMusic" class="px-4 py-2.5 rounded-xl bg-[#2b2d31] text-[#949ba4] text-xs font-semibold hover:bg-[#35373c] hover:text-white transition whitespace-nowrap"><i class="fa-solid fa-music mr-1.5"></i> Müzik & Ses</button>
-            <button onclick="switchCategory('ticket')" id="navTicket" class="px-4 py-2.5 rounded-xl bg-[#2b2d31] text-[#949ba4] text-xs font-semibold hover:bg-[#35373c] hover:text-white transition whitespace-nowrap"><i class="fa-solid fa-ticket mr-1.5"></i> Ticket & Destek</button>
-            <button onclick="switchCategory('system')" id="navSystem" class="px-4 py-2.5 rounded-xl bg-[#2b2d31] text-[#949ba4] text-xs font-semibold hover:bg-[#35373c] hover:text-white transition whitespace-nowrap"><i class="fa-solid fa-server mr-1.5"></i> Bot & Sistem Ayarları</button>
-        </div>
+    <!-- Sağ İçerik Alanı -->
+    <div class="flex-1 flex flex-col min-w-0 bg-[#313338]">
+        <!-- Üst Header -->
+        <header class="bg-[#2b2d31] border-b border-[#1f2023] px-6 py-4 flex justify-between items-center sticky top-0 z-40">
+            <div class="flex items-center space-x-3">
+                <span class="text-xs font-bold text-[#949ba4]">SUNUCU:</span>
+                <select class="input-dark text-xs px-3 py-1.5 rounded-lg font-semibold">
+                    <option>🌟 KALE Ana Sunucu (Aktif)</option>
+                    <option>🛡️ Moderasyon Test Sunucusu</option>
+                </select>
+            </div>
+            <div class="flex items-center space-x-4">
+                <div class="flex items-center space-x-2 bg-[#1e1f22] px-3.5 py-1.5 rounded-xl border border-[#383a40]">
+                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                    <span class="text-xs text-white font-medium">Altare Cloud: Çevrimiçi</span>
+                </div>
+            </div>
+        </header>
 
-        <!-- 1. MODERASYON SEKMESİ -->
-        <div id="secMod" class="space-y-6">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <!-- Ban Komutu -->
-                <div class="discord-card p-5 rounded-2xl space-y-3">
-                    <div class="flex items-center space-x-2 text-red-400 font-bold text-sm"><i class="fa-solid fa-user-slash"></i><span>Yasakla (!ban)</span></div>
-                    <input type="text" id="banId" placeholder="Hedef Kullanıcı ID" class="discord-input w-full p-2.5 rounded-xl text-xs">
-                    <input type="text" id="banReason" placeholder="Yasaklama Sebebi" class="discord-input w-full p-2.5 rounded-xl text-xs">
-                    <button onclick="executeAction('Ban', '!ban')" class="w-full py-2.5 bg-red-600 hover:bg-red-500 text-white rounded-xl text-xs font-semibold transition shadow">Kullanıcıyı Banla</button>
+        <!-- Dinamik Sayfa İçerikleri -->
+        <main class="flex-1 p-6 overflow-y-auto space-y-6">
+            
+            <!-- 1. GENEL BAKIŞ -->
+            <div id="page_home" class="space-y-6">
+                <div class="card-bg p-6 rounded-2xl space-y-3">
+                    <h1 class="text-xl font-bold text-white">KALE Bot Yönetim Paneline Hoş Geldiniz</h1>
+                    <p class="text-xs text-[#949ba4]">Bu panel üzerinden KALE botunun tüm modüllerini, komutlarını ve koruma filtrelerini doğrudan yönetebilir, Altare altyapısıyla anlık senkronizasyon sağlayabilirsiniz.</p>
                 </div>
-                <!-- Mute Komutu -->
-                <div class="discord-card p-5 rounded-2xl space-y-3">
-                    <div class="flex items-center space-x-2 text-amber-400 font-bold text-sm"><i class="fa-solid fa-microphone-slash"></i><span>Sustur (!mute)</span></div>
-                    <input type="text" id="muteId" placeholder="Hedef Kullanıcı ID" class="discord-input w-full p-2.5 rounded-xl text-xs">
-                    <input type="text" id="muteDuration" placeholder="Süre (Örn: 1h, 30m, 1d)" class="discord-input w-full p-2.5 rounded-xl text-xs">
-                    <button onclick="executeAction('Mute', '!mute')" class="w-full py-2.5 bg-amber-600 hover:bg-amber-500 text-white rounded-xl text-xs font-semibold transition shadow">Süreli Sustur</button>
+                <div class="grid grid-cols-1 sm:grid-cols-4 gap-4">
+                    <div class="card-bg p-5 rounded-2xl space-y-1">
+                        <div class="text-[11px] font-bold text-[#949ba4]">TOPLAM ÜYE</div>
+                        <div class="text-2xl font-bold text-white">1,540</div>
+                        <div class="text-[10px] text-emerald-400">↑ Son 24 saatte +18 katılım</div>
+                    </div>
+                    <div class="card-bg p-5 rounded-2xl space-y-1">
+                        <div class="text-[11px] font-bold text-[#949ba4]">AKTİF TICKET</div>
+                        <div class="text-2xl font-bold text-indigo-400">4 Talep</div>
+                        <div class="text-[10px] text-[#949ba4]">Destek hattı açık</div>
+                    </div>
+                    <div class="card-bg p-5 rounded-2xl space-y-1">
+                        <div class="text-[11px] font-bold text-[#949ba4]">UYARI SAYISI</div>
+                        <div class="text-2xl font-bold text-amber-400">12 Kayıt</div>
+                        <div class="text-[10px] text-amber-400">Otomatik mute devrede</div>
+                    </div>
+                    <div class="card-bg p-5 rounded-2xl space-y-1">
+                        <div class="text-[11px] font-bold text-[#949ba4]">KORUMA DURUMU</div>
+                        <div class="text-2xl font-bold text-emerald-400">Aktif</div>
+                        <div class="text-[10px] text-emerald-400">Anti-Raid korumalı</div>
+                    </div>
                 </div>
-                <!-- Kick / Warn Komutu -->
-                <div class="discord-card p-5 rounded-2xl space-y-3">
-                    <div class="flex items-center space-x-2 text-blue-400 font-bold text-sm"><i class="fa-solid fa-user-xmark"></i><span>At / Uyarı (!kick / !warn)</span></div>
-                    <input type="text" id="warnId" placeholder="Hedef Kullanıcı ID" class="discord-input w-full p-2.5 rounded-xl text-xs">
-                    <input type="text" id="warnReason" placeholder="İşlem Sebebi" class="discord-input w-full p-2.5 rounded-xl text-xs">
-                    <div class="grid grid-cols-2 gap-2">
-                        <button onclick="executeAction('Kick', '!kick')" class="py-2.5 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-xs font-semibold transition">Sunucudan At</button>
-                        <button onclick="executeAction('Warn', '!warn')" class="py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-semibold transition">Uyarı Ver</button>
+
+                <!-- Canlı Log Terminali -->
+                <div class="card-bg p-6 rounded-2xl space-y-3">
+                    <h3 class="font-bold text-white text-sm flex items-center space-x-2">
+                        <i class="fa-solid fa-terminal text-[#5865f2]"></i>
+                        <span>Canlı Komut İletişim Terminali</span>
+                    </h3>
+                    <div id="terminalBox" class="bg-[#1e1f22] p-4 rounded-xl font-mono text-xs text-[#dbdee1] space-y-1.5 h-44 overflow-y-auto border border-[#383a40]">
+                        <div class="text-emerald-400">[SİSTEM] KALE Ultimate Command Center başarıyla yüklendi. Tüm modüller senkronize.</div>
                     </div>
                 </div>
             </div>
-            <!-- Ekstra Moderasyon Araçları -->
-            <div class="discord-card p-6 rounded-2xl space-y-4">
-                <h3 class="font-bold text-white text-sm">Toplu Mesaj Temizleme (!clear) ve Rölanti</h3>
-                <div class="flex gap-3">
-                    <input type="number" id="clearCount" placeholder="Silinecek mesaj sayısı (Max 100)" class="discord-input max-w-xs p-2.5 rounded-xl text-xs">
-                    <button onclick="executeAction('Clear', '!clear')" class="px-5 py-2.5 bg-[#5865f2] hover:bg-[#4752c4] text-white rounded-xl text-xs font-semibold transition">Mesajları Temizle</button>
-                </div>
-            </div>
-        </div>
 
-        <!-- 2. GÜVENLİK & KİLİT SEKMESİ -->
-        <div id="secProt" class="space-y-6 hidden">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div class="discord-card p-6 rounded-2xl space-y-4">
-                    <div class="flex items-center space-x-2 text-red-400 font-bold"><i class="fa-solid fa-lock"></i><span>Kanal Kilitleme (Lockdown)</span></div>
-                    <p class="text-xs text-[#949ba4]">Sunucudaki aktif kanalın yazma izinlerini anında kapatır veya açar.</p>
-                    <div class="flex space-x-3">
-                        <button onclick="executeAction('Lockdown ON', '!lockdown on')" class="flex-1 py-3 bg-red-600 hover:bg-red-500 text-white rounded-xl text-xs font-semibold transition">Kanalı Kilitle</button>
-                        <button onclick="executeAction('Lockdown OFF', '!lockdown off')" class="flex-1 py-3 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-semibold transition">Kilidi Kaldır</button>
+            <!-- 2. MODERASYON KOMUTLARI -->
+            <div id="page_mod" class="space-y-6 hidden">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="card-bg p-5 rounded-2xl space-y-3">
+                        <div class="text-red-400 font-bold text-sm flex items-center space-x-2"><i class="fa-solid fa-user-slash"></i><span>Yasakla (!ban)</span></div>
+                        <input type="text" id="banId" placeholder="Kullanıcı ID" class="input-dark w-full p-2.5 rounded-xl text-xs">
+                        <input type="text" id="banReason" placeholder="Yasaklama Sebebi" class="input-dark w-full p-2.5 rounded-xl text-xs">
+                        <button onclick="triggerBotCmd('Ban', '!ban')" class="w-full py-2.5 bg-red-600 hover:bg-red-500 text-white rounded-xl text-xs font-semibold transition">Kullanıcıyı Banla</button>
+                    </div>
+                    <div class="card-bg p-5 rounded-2xl space-y-3">
+                        <div class="text-amber-400 font-bold text-sm flex items-center space-x-2"><i class="fa-solid fa-microphone-slash"></i><span>Sustur (!mute)</span></div>
+                        <input type="text" id="muteId" placeholder="Kullanıcı ID" class="input-dark w-full p-2.5 rounded-xl text-xs">
+                        <input type="text" id="muteTime" placeholder="Süre (Örn: 1h, 30m)" class="input-dark w-full p-2.5 rounded-xl text-xs">
+                        <button onclick="triggerBotCmd('Mute', '!mute')" class="w-full py-2.5 bg-amber-600 hover:bg-amber-500 text-white rounded-xl text-xs font-semibold transition">Süreli Sustur</button>
+                    </div>
+                    <div class="card-bg p-5 rounded-2xl space-y-3">
+                        <div class="text-blue-400 font-bold text-sm flex items-center space-x-2"><i class="fa-solid fa-user-xmark"></i><span>At / Uyarı (!kick)</span></div>
+                        <input type="text" id="kickId" placeholder="Kullanıcı ID" class="input-dark w-full p-2.5 rounded-xl text-xs">
+                        <input type="text" id="kickReason" placeholder="Sebep" class="input-dark w-full p-2.5 rounded-xl text-xs">
+                        <div class="grid grid-cols-2 gap-2">
+                            <button onclick="triggerBotCmd('Kick', '!kick')" class="py-2.5 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-xs font-semibold transition">Sunucudan At</button>
+                            <button onclick="triggerBotCmd('Warn', '!warn')" class="py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-semibold transition">Uyarı Ver</button>
+                        </div>
                     </div>
                 </div>
-                <div class="discord-card p-6 rounded-2xl space-y-4">
-                    <div class="flex items-center space-x-2 text-amber-400 font-bold"><i class="fa-solid fa-shield-dog"></i><span>Anti-Raid & AutoMod Koruması</span></div>
-                    <p class="text-xs text-[#949ba4]">Bot koruma eşiklerini dinamik olarak web üzerinden yapılandırın.</p>
-                    <select class="discord-input w-full p-2.5 rounded-xl text-xs">
-                        <option>Maksimum Koruma (Sıkı Filtre + Anti-Bot)</option>
-                        <option>Normal Koruma (Standart AutoMod)</option>
-                        <option>Koruma Modunu Devre Dışı Bırak</option>
-                    </select>
-                    <button onclick="executeAction('Anti-Raid Update', 'Anti-Raid eşikleri güncellendi')" class="w-full py-2.5 bg-[#5865f2] hover:bg-[#4752c4] text-white rounded-xl text-xs font-semibold transition">Koruma Ayarını Uygula</button>
-                </div>
             </div>
-        </div>
 
-        <!-- 3. MÜZİK & SES SEKMESİ -->
-        <div id="secMusic" class="space-y-6 hidden">
-            <div class="discord-card p-6 rounded-2xl space-y-4">
-                <div class="flex items-center space-x-2 text-indigo-400 font-bold"><i class="fa-solid fa-headphones"></i><span>Müzik Komutları & Soundboard</span></div>
-                <div class="flex gap-3">
-                    <input type="text" id="musicUrl" placeholder="YouTube Şarkı Linki veya Arama Terimi" class="discord-input flex-1 p-2.5 rounded-xl text-xs">
-                    <button onclick="executeAction('Play Music', '!play')" class="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-semibold transition">Oynat</button>
-                </div>
-                <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-3">
-                    <button onclick="executeAction('Pause Music', '!pause')" class="p-3 bg-[#1e1f22] hover:bg-[#35373c] rounded-xl text-xs font-semibold transition border border-[#383a40]">⏸️ Duraklat</button>
-                    <button onclick="executeAction('Resume Music', '!resume')" class="p-3 bg-[#1e1f22] hover:bg-[#35373c] rounded-xl text-xs font-semibold transition border border-[#383a40]">▶️ Devam Et</button>
-                    <button onclick="executeAction('Skip Music', '!skip')" class="p-3 bg-[#1e1f22] hover:bg-[#35373c] rounded-xl text-xs font-semibold transition border border-[#383a40]">⏭️ Şarkıyı Geç</button>
-                    <button onclick="executeAction('Stop Music', '!stop')" class="p-3 bg-[#1e1f22] hover:bg-red-500/20 text-red-400 rounded-xl text-xs font-semibold transition border border-[#383a40]">⏹️ Müziği Bitir</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- 4. TICKET SEKMESİ -->
-        <div id="secTicket" class="space-y-6 hidden">
-            <div class="discord-card p-6 rounded-2xl space-y-4">
-                <div class="flex justify-between items-center">
-                    <div>
-                        <h3 class="font-bold text-white text-md">Destek Talepleri Yönetimi</h3>
-                        <p class="text-xs text-[#949ba4]">Kullanıcıların açtığı tüm ticketleri canlı görüntüleyin ve yönetin.</p>
+            <!-- 3. GÜVENLİK & KİLİT -->
+            <div id="page_prot" class="space-y-6 hidden">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="card-bg p-6 rounded-2xl space-y-4">
+                        <div class="text-red-400 font-bold text-md flex items-center space-x-2"><i class="fa-solid fa-lock"></i><span>Kanal Kilitleme (Lockdown)</span></div>
+                        <p class="text-xs text-[#949ba4]">Aktif kanalın yazışma izinlerini anında kapatır veya açar.</p>
+                        <div class="flex space-x-3">
+                            <button onclick="triggerBotCmd('Lockdown ON', '!lockdown on')" class="flex-1 py-3 bg-red-600 hover:bg-red-500 text-white rounded-xl text-xs font-semibold transition">Kanalı Kilitle</button>
+                            <button onclick="triggerBotCmd('Lockdown OFF', '!lockdown off')" class="flex-1 py-3 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-semibold transition">Kilidi Kaldır</button>
+                        </div>
                     </div>
-                    <button onclick="executeAction('Ticket Panel Setup', '!destek-panel-kur')" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-semibold transition">Kanala Panel Kur</button>
+                    <div class="card-bg p-6 rounded-2xl space-y-4">
+                        <div class="text-amber-400 font-bold text-md flex items-center space-x-2"><i class="fa-solid fa-shield-dog"></i><span>Anti-Raid Koruması</span></div>
+                        <p class="text-xs text-[#949ba4]">Bot koruma eşiklerini dinamik olarak yapılandırın.</p>
+                        <select class="input-dark w-full p-2.5 rounded-xl text-xs">
+                            <option>Maksimum Koruma (Sıkı Filtre + Anti-Bot)</option>
+                            <option>Normal Koruma (Standart AutoMod)</option>
+                            <option>Devre Dışı</option>
+                        </select>
+                        <button onclick="triggerBotCmd('Anti-Raid', 'Koruma ayarları güncellendi')" class="w-full py-2.5 bg-[#5865f2] hover:bg-[#4752c4] text-white rounded-xl text-xs font-semibold transition">Ayarları Kaydet</button>
+                    </div>
                 </div>
-                <div class="overflow-x-auto">
+            </div>
+
+            <!-- 4. HOŞ GELDİN & ROL -->
+            <div id="page_welcome" class="space-y-6 hidden">
+                <div class="card-bg p-6 rounded-2xl space-y-4">
+                    <h3 class="font-bold text-white text-md">Hoş Geldin Mesajı ve Otomatik Rol</h3>
+                    <div class="space-y-3">
+                        <div>
+                            <label class="text-xs text-[#949ba4] block mb-1">Hoş Geldin Kanalı</label>
+                            <select class="input-dark w-full p-2.5 rounded-xl text-xs"><option>#hos-geldiniz</option></select>
+                        </div>
+                        <div>
+                            <label class="text-xs text-[#949ba4] block mb-1">Yeni Üyelere Verilecek Otomatik Rol</label>
+                            <select class="input-dark w-full p-2.5 rounded-xl text-xs"><option>Üye (Kayıtsız)</option></select>
+                        </div>
+                        <button onclick="triggerBotCmd('Welcome Config', 'Hoş geldin ayarları güncellendi')" class="px-5 py-2.5 bg-[#5865f2] hover:bg-[#4752c4] text-white rounded-xl text-xs font-semibold transition">Kaydet</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 5. SEVİYE SİSTEMİ -->
+            <div id="page_level" class="space-y-6 hidden">
+                <div class="card-bg p-6 rounded-2xl space-y-4">
+                    <h3 class="font-bold text-white text-md">Seviye (XP) ve Sıralama Sistemi</h3>
+                    <div class="flex items-center justify-between p-3 bg-[#1e1f22] rounded-xl border border-[#383a40]">
+                        <span class="text-xs text-white font-medium">Seviye Sistemi Durumu</span>
+                        <button onclick="triggerBotCmd('Level System', 'Seviye sistemi açıldı/kapandı')" class="px-4 py-1.5 bg-emerald-600 text-white text-xs rounded-lg">Aktif</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 6. TICKET SİSTEMİ -->
+            <div id="page_ticket" class="space-y-6 hidden">
+                <div class="card-bg p-6 rounded-2xl space-y-4">
+                    <div class="flex justify-between items-center">
+                        <h3 class="font-bold text-white text-md">Aktif Destek Talepleri</h3>
+                        <button onclick="triggerBotCmd('Ticket Panel', 'Panel kanala kuruldu')" class="px-4 py-2 bg-emerald-600 text-white rounded-xl text-xs font-semibold">Panel Kur</button>
+                    </div>
                     <table class="w-full text-left text-xs">
                         <thead class="bg-[#1e1f22] text-[#949ba4] border-b border-[#383a40]">
-                            <tr>
-                                <th class="p-3">Talep ID</th>
-                                <th class="p-3">Kullanıcı</th>
-                                <th class="p-3">Kategori</th>
-                                <th class="p-3">Durum</th>
-                                <th class="p-3 text-right">Eylem</th>
-                            </tr>
+                            <tr><th class="p-3">Talep ID</th><th class="p-3">Kullanıcı</th><th class="p-3">Durum</th><th class="p-3 text-right">Eylem</th></tr>
                         </thead>
                         <tbody class="divide-y divide-[#383a40]">
                             <tr>
-                                <td class="p-3 font-mono text-indigo-400">#tkt-8821</td>
+                                <td class="p-3 font-mono text-indigo-400">#tkt-7712</td>
                                 <td class="p-3 text-white">Musmert#2027</td>
-                                <td class="p-3 text-[#949ba4]">Genel Destek</td>
                                 <td class="p-3"><span class="px-2 py-0.5 bg-emerald-500/20 text-emerald-400 rounded">Açık</span></td>
-                                <td class="p-3 text-right"><button onclick="executeAction('Close Ticket', 'Ticket kapatıldı')" class="px-2.5 py-1 bg-red-500/10 text-red-400 rounded hover:bg-red-500/20">Kapat</button></td>
+                                <td class="p-3 text-right"><button onclick="triggerBotCmd('Close Ticket', 'Ticket kapatıldı')" class="px-2 py-1 bg-red-500/10 text-red-400 rounded">Kapat</button></td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
             </div>
-        </div>
 
-        <!-- 5. BOT & SİSTEM AYARLARI SEKMESİ -->
-        <div id="secSystem" class="space-y-6 hidden">
-            <div class="discord-card p-6 rounded-2xl space-y-4">
-                <h3 class="font-bold text-white text-md">Bot Durum Mesajı ve Aktivite (Activity)</h3>
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                        <label class="text-xs text-[#949ba4] block mb-1">Aktivite Türü</label>
-                        <select class="discord-input w-full p-2.5 rounded-xl text-xs">
-                            <option>Oynuyor (Playing)</option>
-                            <option>İzliyor (Watching)</option>
-                            <option>Dinliyor (Listening)</option>
-                            <option>Yayınlıyor (Streaming)</option>
-                        </select>
+            <!-- 7. MÜZİK & SOUNDBOARD -->
+            <div id="page_music" class="space-y-6 hidden">
+                <div class="card-bg p-6 rounded-2xl space-y-4">
+                    <h3 class="font-bold text-white text-md">Müzik Botu Kontrol Paneli</h3>
+                    <div class="flex gap-3">
+                        <input type="text" placeholder="YouTube Şarkı Linki" class="input-dark flex-1 p-2.5 rounded-xl text-xs">
+                        <button onclick="triggerBotCmd('Play', '!play')" class="px-5 py-2.5 bg-indigo-600 text-white rounded-xl text-xs font-semibold">Oynat</button>
                     </div>
-                    <div>
-                        <label class="text-xs text-[#949ba4] block mb-1">Durum Metni</label>
-                        <input type="text" value="Nexus Enterprise | KALE v2.0" class="discord-input w-full p-2.5 rounded-xl text-xs">
+                    <div class="grid grid-cols-4 gap-3">
+                        <button onclick="triggerBotCmd('Pause', '!pause')" class="p-3 bg-[#1e1f22] rounded-xl text-xs border border-[#383a40]">⏸️ Duraklat</button>
+                        <button onclick="triggerBotCmd('Resume', '!resume')" class="p-3 bg-[#1e1f22] rounded-xl text-xs border border-[#383a40]">▶️ Devam Et</button>
+                        <button onclick="triggerBotCmd('Skip', '!skip')" class="p-3 bg-[#1e1f22] rounded-xl text-xs border border-[#383a40]">⏭️ Geç</button>
+                        <button onclick="triggerBotCmd('Stop', '!stop')" class="p-3 bg-[#1e1f22] text-red-400 rounded-xl text-xs border border-[#383a40]">⏹️ Bitir</button>
                     </div>
                 </div>
-                <button onclick="executeAction('Bot Status Update', 'Bot durumu güncellendi')" class="w-full py-2.5 bg-[#5865f2] hover:bg-[#4752c4] text-white rounded-xl text-xs font-semibold transition">Bota Uygula</button>
             </div>
-        </div>
 
-        <!-- Canlı İşlem Log Terminali -->
-        <div class="discord-card p-6 rounded-2xl space-y-3">
-            <h3 class="font-bold text-white text-sm flex items-center space-x-2">
-                <i class="fa-solid fa-terminal text-[#5865f2]"></i>
-                <span>Canlı Komut İletişim Terminali</span>
-            </h3>
-            <div id="terminalLog" class="bg-[#1e1f22] p-4 rounded-xl font-mono text-xs text-[#dbdee1] space-y-1.5 h-36 overflow-y-auto border border-[#383a40]">
-                <div class="text-emerald-400">[SİSTEM] KALE Ultimate Panel başarıyla yüklendi. Tüm komut modülleri aktif.</div>
+            <!-- 8. BOT SİSTEM AYARLARI -->
+            <div id="page_settings" class="space-y-6 hidden">
+                <div class="card-bg p-6 rounded-2xl space-y-4">
+                    <h3 class="font-bold text-white text-md">Bot Durum Mesajı ve Aktivite</h3>
+                    <div class="grid grid-cols-2 gap-4">
+                        <select class="input-dark p-2.5 rounded-xl text-xs"><option>Oynuyor (Playing)</option><option>İzliyor (Watching)</option></select>
+                        <input type="text" value="Nexus Enterprise | KALE v2.0" class="input-dark p-2.5 rounded-xl text-xs">
+                    </div>
+                    <button onclick="triggerBotCmd('Bot Status', 'Durum güncellendi')" class="w-full py-2.5 bg-[#5865f2] text-white rounded-xl text-xs font-semibold">Uygula</button>
+                </div>
             </div>
-        </div>
-    </main>
 
-    <footer class="text-center py-4 text-xs text-[#80848e] bg-[#2b2d31] border-t border-[#1f2023] mt-auto">
-        KALE Discord Bot &bull; Nexus Enterprise Ultimate Command Center
-    </footer>
+        </main>
+    </div>
 
     <script>
-        function switchCategory(cat) {
-            ['Mod', 'Prot', 'Music', 'Ticket', 'System'].forEach(c => {
-                document.getElementById('sec' + c).classList.add('hidden');
-                document.getElementById('nav' + c).className = "px-4 py-2.5 rounded-xl bg-[#2b2d31] text-[#949ba4] text-xs font-semibold hover:bg-[#35373c] hover:text-white transition whitespace-nowrap";
+        function switchPage(page) {
+            ['home', 'mod', 'prot', 'welcome', 'level', 'ticket', 'music', 'settings'].forEach(p => {
+                document.getElementById('page_' + p).classList.add('hidden');
+                document.getElementById('nav_' + p).className = "w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-[#949ba4] hover:bg-[#35373c] hover:text-white text-xs font-semibold transition";
             });
-            document.getElementById('sec' + (cat === 'mod' ? 'Mod' : cat === 'prot' ? 'Prot' : cat === 'music' ? 'Music' : cat === 'ticket' ? 'Ticket' : 'System')).classList.remove('hidden');
-            document.getElementById('nav' + (cat === 'mod' ? 'Mod' : cat === 'prot' ? 'Prot' : cat === 'music' ? 'Music' : cat === 'ticket' ? 'Ticket' : 'System')).className = "px-4 py-2.5 rounded-xl bg-[#5865f2] text-white text-xs font-semibold transition whitespace-nowrap shadow";
+            document.getElementById('page_' + page).classList.remove('hidden');
+            document.getElementById('nav_' + page).className = "w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl bg-[#5865f2] text-white text-xs font-semibold transition shadow-md";
         }
 
-        function executeAction(type, cmd) {
+        function triggerBotCmd(type, cmd) {
             const time = new Date().toLocaleTimeString();
-            const term = document.getElementById('terminalLog');
+            const box = document.getElementById('terminalBox');
             const row = document.createElement('div');
             row.className = 'text-indigo-300';
-            row.innerText = `[${time}] [KOMUT TETİKLEME] Tür: ${type} | Komut: ${cmd}`;
-            term.prepend(row);
-            alert(`İşlem başarıyla bota iletildi: ${type} (${cmd})`);
+            row.innerText = `[${time}] [API İLETİŞİM] İşlem: ${type} | Komut: ${cmd}`;
+            box.prepend(row);
+            alert(`İşlem bota iletildi: ${type} (${cmd})`);
         }
     </script>
 </body>
