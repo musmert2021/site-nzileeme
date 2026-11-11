@@ -1,332 +1,478 @@
-<!DOCTYPE html>
-<html lang="tr">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>KALE — Discord sunucu botu</title>
-<meta name="description" content="Moderasyon, seviye, müzik, çekiliş, destek paneli ve daha fazlası. Tüm komutlar ve yönetim paneli.">
-<link rel="icon" href="assets/profil_resmi.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&display=swap" rel="stylesheet">
-<style>
-:root{--gece:#14152a;--yuzey:#1d1e3a;--cizgi:#303262;--vurgu:#5865f2;--tas:#f2f3ff;--sis:#9a9dc9;--ok:#3ba55d;--hata:#ed4245;--r:14px}
-*{box-sizing:border-box;margin:0}
-html{scroll-behavior:smooth}
-body{background:var(--gece) url(assets/arka_plan.png) top center/1200px auto no-repeat;color:var(--tas);font:400 16px/1.6 "Bricolage Grotesque",system-ui,sans-serif}
-a{color:inherit}
-:focus-visible{outline:2px solid var(--vurgu);outline-offset:3px}
-.wrap{max-width:980px;margin:0 auto;padding:0 20px}
-nav{display:flex;align-items:center;gap:12px;padding:18px 0}
-nav .logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:20px;text-decoration:none;margin-right:auto}
-nav .logo img{width:36px;height:36px;border-radius:10px}
-#hesap{display:flex;gap:8px}
-.btn{display:inline-flex;align-items:center;gap:8px;border:0;border-radius:10px;padding:10px 18px;font:600 15px inherit;font-family:inherit;background:var(--vurgu);color:#fff;text-decoration:none;cursor:pointer}
-.btn:hover{background:#4752c4}
-.btn.sade{background:transparent;border:1px solid var(--cizgi);color:var(--tas)}
-.btn.sade:hover{background:var(--yuzey)}
-.btn.tehlike{background:var(--hata)}.btn.tehlike:hover{background:#c93b3e}
-.btn[disabled]{opacity:.5;cursor:default}
-header.hero{padding:56px 0 40px}
-h1{font-size:clamp(40px,7vw,72px);line-height:1.02;font-weight:800;letter-spacing:-.02em;max-width:12ch}
-.hero p{color:var(--sis);max-width:46ch;margin:18px 0 26px;font-size:18px}
-.palet{background:var(--yuzey);border:1px solid var(--cizgi);border-radius:var(--r);overflow:hidden;max-width:620px}
-.palet label{display:flex;align-items:center;gap:10px;padding:14px 18px;border-bottom:1px solid var(--cizgi)}
-.palet label b{color:var(--vurgu);font-size:22px}
-.palet input{flex:1;background:none;border:0;color:var(--tas);font:600 18px inherit;font-family:inherit;outline:0}
-.palet ul{list-style:none;padding:6px;max-height:210px;overflow:auto}
-.palet li{display:flex;gap:12px;padding:8px 12px;border-radius:8px;cursor:pointer}
-.palet li:hover{background:var(--cizgi)}
-.palet li strong{white-space:nowrap}.palet li span{color:var(--sis);font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-section{padding:44px 0}
-h2{font-size:30px;font-weight:800;margin-bottom:6px}
-.alt{color:var(--sis);margin-bottom:22px}
-.chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px}
-.chip{border:1px solid var(--cizgi);background:none;color:var(--sis);border-radius:99px;padding:6px 14px;font:600 14px inherit;font-family:inherit;cursor:pointer}
-.chip[aria-pressed=true]{background:var(--vurgu);border-color:var(--vurgu);color:#fff}
-.liste{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:10px}
-.kom{background:var(--yuzey);border:1px solid var(--cizgi);border-radius:var(--r);padding:14px 16px}
-.kom code{font:700 16px inherit;font-family:inherit;color:#fff}
-.kom p{color:var(--sis);font-size:14px;margin-top:4px}
-.rozet{float:right;font-size:12px;color:var(--sis);border:1px solid var(--cizgi);border-radius:6px;padding:0 7px}
-.sunucular{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px}
-.sun{display:flex;align-items:center;gap:14px;background:var(--yuzey);border:1px solid var(--cizgi);border-radius:var(--r);padding:14px}
-.sun img,.sun .ik{width:52px;height:52px;border-radius:50%;background:var(--cizgi);flex:none;display:grid;place-items:center;font-weight:800}
-.sun div{min-width:0;flex:1}.sun b{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.sun small{color:var(--sis)}
-dialog{background:var(--yuzey);color:var(--tas);border:1px solid var(--cizgi);border-radius:var(--r);padding:24px;max-width:600px;width:92vw;max-height:90vh;overflow:auto}
-dialog::backdrop{background:#000a}
-dialog h3{font-size:22px;margin-bottom:4px}
-dialog h4{font-size:16px;margin:22px 0 8px;padding-top:16px;border-top:1px solid var(--cizgi)}
-.alan{display:grid;gap:10px}
-.alan label{display:grid;gap:4px;font-size:14px;color:var(--sis)}
-.alan input,.alan select,.alan textarea{background:var(--gece);border:1px solid var(--cizgi);border-radius:8px;color:var(--tas);padding:9px 12px;font:inherit}
-.alan textarea{min-height:80px;resize:vertical}
-.satir{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
-.durum{min-height:24px;margin-top:12px;font-size:14px;color:var(--sis)}
-.durum.ok{color:var(--ok)}.durum.hata{color:var(--hata)}
-.bos{border:1px dashed var(--cizgi);border-radius:var(--r);padding:28px;text-align:center;color:var(--sis)}
-footer{border-top:1px solid var(--cizgi);padding:26px 0;color:var(--sis);font-size:14px}
-@media(max-width:560px){nav .btn.sade.gizle{display:none}}
-@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
-</style>
-</head>
-<body>
-<div class="wrap">
-  <nav>
-    <a class="logo" href="#"><img src="assets/profil_resmi.png" alt="">KALE</a>
-    <a class="btn sade gizle" href="#komutlar">Komutlar</a>
-    <span id="hesap"></span>
-  </nav>
+using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.IO;
+using System.Text.Json;
+using System.Windows.Forms;
 
-  <header class="hero">
-    <h1>Sunucunun kalesi.</h1>
-    <p>Moderasyon, seviye, müzik, çekiliş ve destek paneli tek botta. Bir komut ara ya da yönetici girişi yapıp botun bulunduğu tüm sunucuları yönet.</p>
-    <div class="palet">
-      <label><b>/</b><input id="ara" type="search" placeholder="komut ara: ban, çal, seviye…" autocomplete="off" aria-label="Komut ara"></label>
-      <ul id="sonuc"></ul>
-    </div>
-  </header>
+namespace GercekSistemUygulamasi1500
+{
+    // ==========================================
+    // 1. VERİ MODELİ VE DOĞRULAMA (MODÜL A)
+    // ==========================================
+    public class Kullanici
+    {
+        public string KullaniciAdi { get; set; }
+        public string GirisKodu { get; set; }
+        public string Rol { get; set; } // "Owner", "Admin", "Uye"
+        public DateTime KayitTarihi { get; set; } = DateTime.Now;
+        public DateTime SonGirisTarihi { get; set; } = DateTime.MinValue;
+    }
 
-  <section id="panel" hidden>
-    <h2>Sunucular</h2>
-    <p class="alt" id="psayi">Botun bulunduğu tüm sunucular.</p>
-    <div id="sunucular" class="sunucular"></div>
-  </section>
+    public class SistemLogu
+    {
+        public DateTime Zaman { get; set; } = DateTime.Now;
+        public string IslemTuru { get; set; }
+        public string Detay { get; set; }
+    }
 
-  <section id="komutlar">
-    <h2>Tüm komutlar</h2>
-    <p class="alt" id="sayi"></p>
-    <div class="chips" id="chips"></div>
-    <div class="liste" id="liste"></div>
-  </section>
+    // ==========================================
+    // 2. VERİTABANI VE DOSYALAMA MOTORU (MODÜL B)
+    // ==========================================
+    public static class VeritabaniYoneticisi
+    {
+        private static readonly string veriDosyasi = "kullanicilar_v2.json";
+        private static readonly string logDosyasi = "sistem_loglari.json";
 
-  <footer>KALE açık kaynaklıdır. <a href="#" id="gh">Kodu GitHub'da gör</a></footer>
-</div>
+        public static List<Kullanici> KullanicilariYukle()
+        {
+            try
+            {
+                if (!File.Exists(veriDosyasi))
+                {
+                    var varsayilanListe = new List<Kullanici>
+                    {
+                        new Kullanici { KullaniciAdi = "Owner", GirisKodu = "313131", Rol = "Owner" }
+                    };
+                    KullanicilariKaydet(varsayilanListe);
+                    LogYaz("SISTEM", "Varsayılan Owner (313131) hesabı oluşturuldu.");
+                    return varsayilanListe;
+                }
 
-<dialog id="giris">
-  <form id="gform" class="alan">
-    <h3>Yönetici girişi</h3>
-    <p class="alt" style="margin:0">Şifreyi gir, botun bulunduğu sunucuları yönet.</p>
-    <label>Şifre<input id="sifre" type="password" autocomplete="current-password" required></label>
-    <div class="durum" id="gdurum" role="alert"></div>
-    <div class="satir" style="margin-top:0">
-      <button class="btn" type="submit">Giriş yap</button>
-      <button class="btn sade" type="button" onclick="giris.close()">Vazgeç</button>
-    </div>
-  </form>
-</dialog>
+                string json = File.ReadAllText(veriDosyasi);
+                return JsonSerializer.Deserialize<List<Kullanici>>(json) ?? new List<Kullanici>();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Veritabanı yüklenirken hata oluştu: " + ex.Message, "Kritik Hata", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return new List<Kullanici>();
+            }
+        }
 
-<dialog id="yonet"><div id="ybody"></div></dialog>
+        public static void KullanicilariKaydet(List<Kullanici> liste)
+        {
+            try
+            {
+                string json = JsonSerializer.Serialize(liste, new JsonSerializerOptions { WriteIndented = true });
+                File.WriteAllText(veriDosyasi, json);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Veritabanı kaydedilemedi: " + ex.Message, "Hata", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
 
-<script>
-/* ====== AYARLAR ====== */
-const API = "https://BURAYA-RENDER-ADRESIN.onrender.com"; // botun çalıştığı adres (keep_alive sunucusu)
-const GITHUB = "https://github.com/KULLANICI/DEPO";
-const DAVET = "https://discord.com/oauth2/authorize?client_id=1558755482632724540&permissions=8&integration_type=0&scope=applications.commands+bot";
-/* ===================== */
+        public static void LogYaz(string tur, string detay)
+        {
+            try
+            {
+                List<SistemLogu> loglar = new List<SistemLogu>();
+                if (File.Exists(logDosyasi))
+                {
+                    string json = File.ReadAllText(logDosyasi);
+                    loglar = JsonSerializer.Deserialize<List<SistemLogu>>(json) ?? new List<SistemLogu>();
+                }
 
-// [kategori, ad, açıklama, yetki gerekir mi]
-const K = [
-["Moderasyon","ban","Üyeyi sunucudan kalıcı olarak yasaklar.",1],
-["Moderasyon","unban","Yasaklı üyenin banını ID ile kaldırır.",1],
-["Moderasyon","kick","Üyeyi sunucudan atar.",1],
-["Moderasyon","timeout","Üyeyi belirli süre susturur.",1],
-["Moderasyon","timeout-kaldır","Üyenin susturmasını kaldırır.",1],
-["Moderasyon","lockdown","Kanalı sohbete kapatır.",1],
-["Moderasyon","unlock","Kilitli kanalı açar.",1],
-["Moderasyon","yavaş-mod","Kanalın yavaş mod süresini ayarlar.",1],
-["Moderasyon","sil","Girilen miktarda mesajı temizler.",1],
-["Moderasyon","isim-değiştir","Üyenin takma adını değiştirir.",1],
-["Moderasyon","rol-düzenle","Üyeye ya da tüm botlara rol ekler/kaldırır.",1],
-["Uyarı","warn","Üyeye uyarı verir. Her 3 uyarıda otomatik susturur.",1],
-["Uyarı","uyarılar","Üyenin uyarılarını listeler.",1],
-["Uyarı","uyarı-sil","ID ile tek bir uyarıyı siler.",1],
-["Uyarı","uyarı-temizle","Üyenin tüm uyarılarını siler.",1],
-["Ayarlar","log-kanal-ayarla","Log kayıtlarının gideceği kanalı seçer.",1],
-["Ayarlar","hoşgeldin-kanal-ayarla","Karşılama mesajı kanalını seçer.",1],
-["Ayarlar","otorol-ayarla","Katılan herkese verilecek rolü seçer.",1],
-["Ayarlar","ayarlar","Sunucunun mevcut bot ayarlarını gösterir.",1],
-["Destek","destek-panel-ayarla","Destek (ticket) sisteminin tüm ayarlarını açar.",1],
-["Seviye","seviye","Resimli seviye kartını gösterir."],
-["Seviye","liderlik-tablosu","En çok XP'ye sahip üyeleri listeler."],
-["Seviye","seviye-rolü-ekle","Bir seviyeye ulaşınca verilecek rolü bağlar.",1],
-["Seviye","seviye-rolleri-otomatik-oluştur","Emojili seviye rollerini kendisi oluşturur.",1],
-["Seviye","seviye-rolü-sil","Seviye rolü kaydını kaldırır.",1],
-["Seviye","seviye-kanal-ayarla","Seviye atlama mesajlarının kanalını seçer.",1],
-["Seviye","seviye-sistemi","Seviye bildirimlerini açar/kapatır.",1],
-["Müzik","çal","YouTube'dan şarkı arar, çalar veya kuyruğa ekler."],
-["Müzik","duraklat","Çalan şarkıyı duraklatır."],
-["Müzik","devam-ettir","Duraklatılmış şarkıyı sürdürür."],
-["Müzik","geç","Çalan şarkıyı atlar."],
-["Müzik","kuyruk","Sıradaki şarkıları listeler."],
-["Müzik","ayrıl","Ses kanalından ayrılır, kuyruğu temizler."],
-["Ses kutusu","ses-ekle","Kalıcı bir ses dosyası ekler.",1],
-["Ses kutusu","ses-çal","Eklenmiş sesi ses kanalında çalar."],
-["Ses kutusu","ses-liste","Eklenmiş tüm sesleri listeler."],
-["Ses kutusu","ses-sil","Eklenmiş bir sesi kaldırır.",1],
-["Çekiliş","çekiliş-başlat","Butonla katılımlı yeni çekiliş başlatır.",1],
-["Çekiliş","çekiliş-bitir","Çekilişi hemen sonlandırır.",1],
-["Çekiliş","çekiliş-yeniden-çek","Biten çekiliş için yeni kazanan seçer.",1],
-["Anti-raid","antiraid-ayarla","Raid korumasını açar/kapatır, eşiği ayarlar.",1],
-["Anti-raid","antiraid-sıfırla","Raid modunu kapatır.",1],
-["Karşılama","karşılama-önizle","Karşılama kartının önizlemesini gösterir.",1],
-["Karşılama","karşılama-renk-ayarla","Kartın rengini ayarlar.",1],
-["Karşılama","karşılama-kart","Resimli kartı açar/kapatır.",1],
-["Rol paneli","rol-panel-oluştur","Butonla rol alma paneli oluşturur.",1],
-["Rol paneli","rol-panel-sil","Rol panelini siler.",1],
-["İstatistik","istatistik-panel","Kendiliğinden güncellenen istatistik panelini kurar.",1],
-["İstatistik","istatistik-kapat","İstatistik panelini kapatır.",1],
-["Bilgi","yapımcı","Bot yapımcısını gösterir."],
-["Bilgi","ping","Botun gecikmesini gösterir."],
-["Bilgi","yardım","Komut listesini gösterir."],
-["Bilgi","kullanıcı-bilgi","Üyenin hesap ve sunucu bilgilerini gösterir."],
-["Bilgi","sunucu-hakkında-herşey","Sunucu istatistikleri ve kuralları."],
-["Bilgi","sunucubilgi","Sunucunun kısa istatistiklerini getirir."],
-["Bilgi","kurallar","Sunucu kurallarını kanala gönderir.",1]
-];
+                loglar.Add(new SistemLogu { IslemTuru = tur, Detay = detay });
+                if (loglar.Count > 100) loglar.RemoveAt(0); // Son 100 logu tut
 
-const $ = s => document.querySelector(s);
-function h(tag, attrs = {}, ...kids){
-  const e = document.createElement(tag);
-  for (const [k,v] of Object.entries(attrs)) k in e ? e[k] = v : e.setAttribute(k, v);
-  e.append(...kids.filter(x => x != null));
-  return e;
+                string yeniJson = JsonSerializer.Serialize(loglar, new JsonSerializerOptions { WriteIndented = true });
+                File.WriteAllText(logDosyasi, yeniJson);
+            }
+            catch { }
+        }
+    }
+
+    // ==========================================
+    // 3. GÜVENLİK VE GİRİŞ EKRANI (MODÜL C)
+    // ==========================================
+    public class GirisFormu : Form
+    {
+        private TextBox txtKod;
+        private Button btnGiris;
+        private Label lblBaslik, lblAltBilgi;
+        private Panel panelKutusu;
+
+        public GirisFormu()
+        {
+            this.Text = "Güvenli Sistem Kimlik Doğrulama";
+            this.Size = new Size(460, 360);
+            this.StartPosition = FormStartPosition.CenterScreen;
+            this.BackColor = Color.FromArgb(10, 10, 15); // Derin Koyu Uzay Siyahı
+            this.FormBorderStyle = FormBorderStyle.FixedDialog;
+            this.MaximizeBox = false;
+
+            // Cam Efektli Panel Tasarımı
+            panelKutusu = new Panel()
+            {
+                Size = new Size(400, 300),
+                Location = new Point(22, 15),
+                BackColor = Color.FromArgb(20, 20, 25)
+            };
+
+            lblBaslik = new Label()
+            {
+                Text = "SİSTEM ERİŞİMİ",
+                Font = new Font("Segoe UI", 16, FontStyle.Bold),
+                ForeColor = Color.FromArgb(239, 68, 68), // Kırmızı Neon Vurgu
+                Location = new Point(110, 30),
+                AutoSize = true
+            };
+            panelKutusu.Controls.Add(lblBaslik);
+
+            Label lblBilgi = new Label()
+            {
+                Text = "Lütfen Size Özel Giriş Kodunuzu Girin:",
+                Font = new Font("Segoe UI", 9, FontStyle.Regular),
+                ForeColor = Color.FromArgb(161, 161, 170),
+                Location = new Point(75, 85),
+                AutoSize = true
+            };
+            panelKutusu.Controls.Add(lblBilgi);
+
+            txtKod = new TextBox()
+            {
+                Font = new Font("Segoe UI", 14),
+                Size = new Size(250, 35),
+                Location = new Point(75, 120),
+                PasswordChar = '•',
+                BackColor = Color.FromArgb(30, 30, 38),
+                ForeColor = Color.White,
+                BorderStyle = BorderStyle.FixedSingle
+            };
+            panelKutusu.Controls.Add(txtKod);
+
+            btnGiris = new Button()
+            {
+                Text = "GİRİŞ YAP",
+                Font = new Font("Segoe UI", 11, FontStyle.Bold),
+                BackColor = Color.FromArgb(239, 68, 68),
+                ForeColor = Color.White,
+                Size = new Size(250, 45),
+                Location = new Point(75, 175),
+                FlatStyle = FlatStyle.Flat,
+                Cursor = Cursors.Hand
+            };
+            btnGiris.FlatAppearance.BorderSize = 0;
+            btnGiris.Click += BtnGiris_Click;
+            panelKutusu.Controls.Add(btnGiris);
+
+            lblAltBilgi = new Label()
+            {
+                Text = "Güvenli ve şifreli bağlantı aktif • v2.5.0",
+                Font = new Font("Segoe UI", 8),
+                ForeColor = Color.FromArgb(113, 113, 122),
+                Location = new Point(105, 245),
+                AutoSize = true
+            };
+            panelKutusu.Controls.Add(lblAltBilgi);
+
+            this.Controls.Add(panelKutusu);
+        }
+
+        private void BtnGiris_Click(object sender, EventArgs e)
+        {
+            string girilenKod = txtKod.Text.Trim();
+            if (string.IsNullOrEmpty(girilenKod))
+            {
+                MessageBox.Show("Giriş kodu boş bırakılamaz!", "Uyarı", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            var kullanicilar = VeritabaniYoneticisi.KullanicilariYukle();
+            Kullanici bulunan = kullanicilar.Find(k => k.GirisKodu == girilenKod);
+
+            if (bulunan != null)
+            {
+                bulunan.SonGirisTarihi = DateTime.Now;
+                VeritabaniYoneticisi.KullanicilariKaydet(kullanicilar);
+                VeritabaniYoneticisi.LogYaz("GIRIS", $"{bulunan.KullaniciAdi} ({bulunan.Rol}) sisteme giriş yaptı.");
+
+                this.Hide();
+                AnaPanelForm anaPanel = new AnaPanelForm(bulunan);
+                anaPanel.ShowDialog();
+                this.Close();
+            }
+            else
+            {
+                VeritabaniYoneticisi.LogYaz("HATA", $"Hatalı giriş denemesi: {girilenKod}");
+                MessageBox.Show("Geçersiz giriş kodu! Erişim reddedildi.", "Güvenlik Uyarısı", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                txtKod.Clear();
+            }
+        }
+    }
+
+    // ==========================================
+    // 4. KONTROL PANELİ VE YÖNETİM (MODÜL D)
+    // ==========================================
+    public class AnaPanelForm : Form
+    {
+        private Kullanici aktifKullanici;
+        private Label lblBaslik, lblKullaniciSayisi;
+        private ListBox lstKullanicilar, lstLoglar;
+        private TextBox txtYeniAd, txtYeniKod, txtSifreDegis;
+        private ComboBox cmbRolSecimi;
+        private Button btnKullaniciEkle, btnSifreGuncelle, btnLoglariYenile, btnCikisYap;
+        private Panel solMenuPanel;
+
+        public AnaPanelForm(Kullanici user)
+        {
+            aktifKullanici = user;
+            this.Text = $"Kontrol Paneli | Oturum: {aktifKullanici.KullaniciAdi} [{aktifKullanici.Rol}]";
+            this.Size = new Size(950, 600);
+            this.StartPosition = FormStartPosition.CenterScreen;
+            this.BackColor = Color.FromArgb(10, 10, 15);
+            this.FormBorderStyle = FormBorderStyle.FixedSingle;
+            this.MaximizeBox = false;
+
+            // Sol Menü / Kontrol Paneli Şeridi
+            solMenuPanel = new Panel()
+            {
+                Size = new Size(220, 600),
+                Dock = DockStyle.Left,
+                BackColor = Color.FromArgb(15, 15, 20)
+            };
+            this.Controls.Add(solMenuPanel);
+
+            lblBaslik = new Label()
+            {
+                Text = "YÖNETİM\nPANELİ",
+                Font = new Font("Segoe UI", 14, FontStyle.Bold),
+                ForeColor = Color.FromArgb(239, 68, 68),
+                Location = new Point(20, 25),
+                AutoSize = true
+            };
+            solMenuPanel.Controls.Add(lblBaslik);
+
+            btnCikisYap = new Button()
+            {
+                Text = "Oturumu Kapat",
+                Font = new Font("Segoe UI", 9, FontStyle.Bold),
+                BackColor = Color.FromArgb(38, 38, 42),
+                ForeColor = Color.White,
+                Size = new Size(180, 35),
+                Location = new Point(20, 500),
+                FlatStyle = FlatStyle.Flat,
+                Cursor = Cursors.Hand
+            };
+            btnCikisYap.FlatAppearance.BorderSize = 0;
+            btnCikisYap.Click += (s, e) => {
+                this.Close();
+                new GirisFormu().Show();
+            };
+            solMenuPanel.Controls.Add(btnCikisYap);
+
+            // Şifre Değiştirme Alanı
+            Label lblSifreBaslik = new Label()
+            {
+                Text = "Şifre Güncelle:",
+                Font = new Font("Segoe UI", 9, FontStyle.Bold),
+                ForeColor = Color.White,
+                Location = new Point(250, 430),
+                AutoSize = true
+            };
+            this.Controls.Add(lblSifreBaslik);
+
+            txtSifreDegis = new TextBox()
+            {
+                PlaceholderText = "Yeni Kodunuz",
+                Location = new Point(250, 460),
+                Size = new Size(180, 28),
+                PasswordChar = '•',
+                BackColor = Color.FromArgb(30, 30, 38),
+                ForeColor = Color.White
+            };
+            this.Controls.Add(txtSifreDegis);
+
+            btnSifreGuncelle = new Button()
+            {
+                Text = "Kodu Değiştir",
+                BackColor = Color.FromArgb(239, 68, 68),
+                ForeColor = Color.White,
+                Size = new Size(120, 30),
+                Location = new Point(440, 459),
+                FlatStyle = FlatStyle.Flat,
+                Cursor = Cursors.Hand
+            };
+            btnSifreGuncelle.FlatAppearance.BorderSize = 0;
+            btnSifreGuncelle.Click += BtnSifreGuncelle_Click;
+            this.Controls.Add(btnSifreGuncelle);
+
+            // Kullanıcı Yönetim Alanı (Owner ve Admin görebilir)
+            if (aktifKullanici.Rol == "Owner" || aktifKullanici.Rol == "Admin")
+            {
+                Label lblKullaniciListesi = new Label()
+                {
+                    Text = "Kayıtlı Sistem Kullanıcıları:",
+                    Font = new Font("Segoe UI", 10, FontStyle.Bold),
+                    ForeColor = Color.FromArgb(239, 68, 68),
+                    Location = new Point(250, 25),
+                    AutoSize = true
+                };
+                this.Controls.Add(lblKullaniciListesi);
+
+                lstKullanicilar = new ListBox()
+                {
+                    Size = new Size(380, 360),
+                    Location = new Point(250, 55),
+                    BackColor = Color.FromArgb(20, 20, 25),
+                    ForeColor = Color.White,
+                    Font = new Font("Segoe UI", 9)
+                };
+                this.Controls.Add(lstKullanicilar);
+                KullaniciListesiniYenile();
+            }
+
+            // Owner Özel: Yeni Kullanıcı Ekleme Paneli
+            if (aktifKullanici.Rol == "Owner")
+            {
+                Label lblYeniEkle = new Label()
+                {
+                    Text = "Yeni Kullanıcı Ekle (Owner Yetkisi):",
+                    Font = new Font("Segoe UI", 10, FontStyle.Bold),
+                    ForeColor = Color.White,
+                    Location = new Point(650, 25),
+                    AutoSize = true
+                };
+                this.Controls.Add(lblYeniEkle);
+
+                txtYeniAd = new TextBox()
+                {
+                    PlaceholderText = "Kullanıcı Adı",
+                    Location = new Point(650, 60),
+                    Size = new Size(240, 28),
+                    BackColor = Color.FromArgb(30, 30, 38),
+                    ForeColor = Color.White
+                };
+                this.Controls.Add(txtYeniAd);
+
+                txtYeniKod = new TextBox()
+                {
+                    PlaceholderText = "Benzersiz Giriş Kodu",
+                    Location = new Point(650, 100),
+                    Size = new Size(240, 28),
+                    BackColor = Color.FromArgb(30, 30, 38),
+                    ForeColor = Color.White
+                };
+                this.Controls.Add(txtYeniKod);
+
+                cmbRolSecimi = new ComboBox()
+                {
+                    Location = new Point(650, 140),
+                    Size = new Size(240, 28),
+                    BackColor = Color.FromArgb(30, 30, 38),
+                    ForeColor = Color.White,
+                    DropDownStyle = ComboBoxStyle.DropDownList
+                };
+                cmbRolSecimi.Items.AddRange(new string[] { "Admin", "Uye" });
+                cmbRolSecimi.SelectedIndex = 1;
+                this.Controls.Add(cmbRolSecimi);
+
+                btnKullaniciEkle = new Button()
+                {
+                    Text = "Kullanıcıyı Kaydet",
+                    BackColor = Color.FromArgb(220, 38, 38),
+                    ForeColor = Color.White,
+                    Size = new Size(240, 38),
+                    Location = new Point(650, 185),
+                    FlatStyle = FlatStyle.Flat,
+                    Cursor = Cursors.Hand
+                };
+                btnKullaniciEkle.FlatAppearance.BorderSize = 0;
+                btnKullaniciEkle.Click += BtnKullaniciEkle_Click;
+                this.Controls.Add(btnKullaniciEkle);
+            }
+        }
+
+        private void KullaniciListesiniYenile()
+        {
+            if (lstKullanicilar == null) return;
+            lstKullanicilar.Items.Clear();
+            var liste = VeritabaniYoneticisi.KullanicilariYukle();
+            foreach (var k in liste)
+            {
+                lstKullanicilar.Items.Add($"{k.KullaniciAdi} | Kod: {k.GirisKodu} | Rol: {k.Rol}");
+            }
+        }
+
+        private void BtnKullaniciEkle_Click(object sender, EventArgs e)
+        {
+            string ad = txtYeniAd.Text.Trim();
+            string kod = txtYeniKod.Text.Trim();
+
+            if (string.IsNullOrEmpty(ad) || string.IsNullOrEmpty(kod))
+            {
+                MessageBox.Show("Lütfen tüm alanları doldurun!", "Hata", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            var liste = VeritabaniYoneticisi.KullanicilariYukle();
+            if (liste.Exists(x => x.GirisKodu == kod))
+            {
+                MessageBox.Show("Bu giriş kodu başka bir hesap tarafından kullanılıyor!", "Çakışma", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            liste.Add(new Kullanici
+            {
+                KullaniciAdi = ad,
+                GirisKodu = kod,
+                Rol = cmbRolSecimi.SelectedItem.ToString()
+            });
+
+            VeritabaniYoneticisi.KullanicilariKaydet(liste);
+            VeritabaniYoneticisi.LogYaz("YONETIM", $"Owner yeni kullanıcı ekledi: {ad} ({cmbRolSecimi.SelectedItem})");
+            KullaniciListesiniYenile();
+
+            MessageBox.Show("Yeni kullanıcı kalıcı olarak oluşturuldu!", "Başarılı", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            txtYeniAd.Clear();
+            txtYeniKod.Clear();
+        }
+
+        private void BtnSifreGuncelle_Click(object sender, EventArgs e)
+        {
+            string yeniKod = txtSifreDegis.Text.Trim();
+            if (string.IsNullOrEmpty(yeniKod))
+            {
+                MessageBox.Show("Yeni kod boş olamaz!", "Uyarı", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            var liste = VeritabaniYoneticisi.KullanicilariYukle();
+            var hedef = liste.Find(x => x.KullaniciAdi == aktifKullanici.KullaniciAdi);
+            if (hedef != null)
+            {
+                hedef.GirisKodu = yeniKod;
+                VeritabaniYoneticisi.KullanicilariKaydet(liste);
+                VeritabaniYoneticisi.LogYaz("GVENLIK", $"{aktifKullanici.KullaniciAdi} kendi giriş kodunu güncelledi.");
+                MessageBox.Show("Giriş kodunuz başarıyla değiştirildi!", "Başarılı", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                txtSifreDegis.Clear();
+            }
+        }
+    }
+
+    // ==========================================
+    // 5. UYGULAMA BAŞLATICI (MODÜL E)
+    // ==========================================
+    static class Program
+    {
+        [STAThread]
+        static void Main()
+        {
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
+            VeritabaniYoneticisi.LogYaz("SISTEM", "Uygulama başlatıldı.");
+            Application.Run(new GirisFormu());
+        }
+    }
 }
-
-/* ---- komut listesi ---- */
-let secili = "Hepsi";
-const kategoriler = ["Hepsi", ...new Set(K.map(k => k[0]))];
-function komutKarti(k){
-  return h("div",{className:"kom"}, k[3] ? h("span",{className:"rozet",textContent:"yetki gerekir"}) : null,
-    h("code",{textContent:"/"+k[1]}), h("p",{textContent:k[2]}));
-}
-function listeyiCiz(){
-  $("#liste").replaceChildren(...K.filter(k => secili==="Hepsi"||k[0]===secili).map(komutKarti));
-  $("#sayi").textContent = K.length + " komut. Sunucuda / yazıp seçerek kullanılır.";
-  $("#chips").replaceChildren(...kategoriler.map(c =>
-    h("button",{className:"chip",type:"button",textContent:c,"aria-pressed":String(c===secili),onclick(){secili=c;listeyiCiz()}})));
-}
-listeyiCiz();
-
-/* ---- hero arama ---- */
-function aramaCiz(){
-  const q = $("#ara").value.trim().toLocaleLowerCase("tr").replace(/^\//,"");
-  const bul = K.filter(k => !q || k[1].toLocaleLowerCase("tr").includes(q) || k[2].toLocaleLowerCase("tr").includes(q)).slice(0,30);
-  $("#sonuc").replaceChildren(...(bul.length ? bul.map(k =>
-    h("li",{onclick(){secili=k[0];listeyiCiz();$("#komutlar").scrollIntoView()}}, h("strong",{textContent:"/"+k[1]}), h("span",{textContent:k[2]})))
-    : [h("li",{textContent:"Eşleşen komut yok. Başka bir kelime dene."})]));
-}
-$("#ara").addEventListener("input", aramaCiz); aramaCiz();
-$("#gh").href = GITHUB;
-
-/* ---- oturum: şifre sunucuda doğrulanır, tarayıcıda sadece token tutulur ---- */
-let token = (() => { try { return sessionStorage.getItem("tok"); } catch { return null; } })();
-const sakla = t => { token = t; try { t ? sessionStorage.setItem("tok", t) : sessionStorage.removeItem("tok"); } catch {} };
-
-async function api(yol, govde){
-  const r = await fetch(API + yol, {
-    method: govde ? "POST" : "GET",
-    headers: {"Content-Type":"application/json", ...(token ? {Authorization:"Bearer "+token} : {})},
-    body: govde ? JSON.stringify(govde) : undefined});
-  let j = {}; try { j = await r.json(); } catch {}
-  if (r.status === 401) { sakla(null); girisButonlari(); $("#panel").hidden = true; throw new Error("Oturum süresi doldu, tekrar giriş yap."); }
-  if (!r.ok) throw new Error(j.error || "İşlem başarısız ("+r.status+")");
-  return j;
-}
-
-function girisButonlari(){
-  $("#hesap").replaceChildren(
-    h("a",{className:"btn sade",href:DAVET,textContent:"Botu ekle"}),
-    h("button",{className:"btn",type:"button",textContent:"Yönetici girişi",onclick(){$("#gdurum").textContent="";$("#giris").showModal();$("#sifre").focus()}}));
-}
-function cikis(){ sakla(null); location.reload(); }
-
-$("#gform").addEventListener("submit", async e => {
-  e.preventDefault();
-  const d = $("#gdurum"); d.className = "durum"; d.textContent = "Kontrol ediliyor…";
-  try {
-    const j = await api("/api/login", {password: $("#sifre").value});
-    sakla(j.token); $("#sifre").value = ""; $("#giris").close(); panel();
-  } catch(err) { d.className = "durum hata"; d.textContent = err.message === "Failed to fetch" ? "Bot sunucusuna ulaşılamadı." : err.message; }
-});
-
-/* ---- sunucu listesi ---- */
-function sunucuKarti(g){
-  const ikon = g.icon ? h("img",{src:`https://cdn.discordapp.com/icons/${g.id}/${g.icon}.png?size=128`,alt:""})
-                      : h("div",{className:"ik",textContent:g.name.slice(0,1).toUpperCase()});
-  return h("div",{className:"sun"}, ikon,
-    h("div",{}, h("b",{textContent:g.name}), h("small",{textContent:(g.members ?? "?")+" üye"})),
-    h("button",{className:"btn",type:"button",textContent:"Yönet",onclick(){yonetAc(g)}}));
-}
-async function panel(){
-  $("#hesap").replaceChildren(
-    h("a",{className:"btn sade",href:DAVET,textContent:"Botu ekle"}),
-    h("button",{className:"btn sade",type:"button",textContent:"Çıkış",onclick:cikis}));
-  try {
-    const liste = await api("/api/guilds");
-    $("#panel").hidden = false;
-    $("#psayi").textContent = "Bot " + liste.length + " sunucuda. Yönetmek istediğini seç.";
-    $("#sunucular").replaceChildren(...(liste.length ? liste.map(sunucuKarti)
-      : [h("div",{className:"bos",textContent:"Bot henüz hiçbir sunucuda değil. Üstteki “Botu ekle” ile ekle."})]));
-  } catch(err) {
-    if (token) { $("#panel").hidden = false; $("#sunucular").replaceChildren(h("div",{className:"bos",textContent:err.message})); }
-  }
-}
-
-/* ---- sunucu yönetimi ---- */
-const sel = (secenekler, deger, bos) => {
-  const s = h("select");
-  if (bos) s.append(h("option",{value:"",textContent:bos}));
-  secenekler.forEach(o => s.append(h("option",{value:o.id,textContent:o.name,selected:String(o.id)===String(deger)})));
-  return s;
-};
-const alan = (etiket, el) => h("label",{}, etiket, el);
-
-async function yonetAc(g){
-  const body = $("#ybody");
-  body.replaceChildren(h("p",{className:"alt",textContent:"Yükleniyor…"}));
-  $("#yonet").showModal();
-  let d;
-  try { d = await api("/api/guilds/"+g.id); }
-  catch(err){ body.replaceChildren(h("p",{className:"durum hata",textContent:err.message}), h("button",{className:"btn sade",textContent:"Kapat",onclick(){$("#yonet").close()}})); return; }
-
-  const durum = h("div",{className:"durum",role:"status"});
-  const say = (m, ok=true) => { durum.className = "durum " + (ok ? "ok" : "hata"); durum.textContent = m; };
-  const calistir = async (yol, govde, basari) => { say("İşleniyor…"); try { await api(yol, govde); say(basari); return true; } catch(e){ say(e.message,false); return false; } };
-  const kanallar = d.channels || [], roller = d.roles || [], ay = d.settings || {};
-
-  const logS = sel(kanallar, ay.log_kanal, "— seçilmedi —"), hosS = sel(kanallar, ay.hosgeldin_kanal, "— seçilmedi —"), rolS = sel(roller, ay.otorol, "— seçilmedi —");
-  const kanS = sel(kanallar, "", "Kanal seç"), metin = h("textarea",{placeholder:"Gönderilecek mesaj"});
-  const eylem = h("select"); [["ban","Yasakla"],["kick","At"],["timeout","Sustur"],["unban","Banı kaldır"]].forEach(([v,t]) => eylem.append(h("option",{value:v,textContent:t})));
-  const uid = h("input",{placeholder:"Kullanıcı ID",inputMode:"numeric"}), dk = h("input",{type:"number",min:1,value:10}), sebep = h("input",{placeholder:"Sebep (isteğe bağlı)"});
-
-  body.replaceChildren(
-    h("h3",{textContent:g.name}), h("p",{className:"alt",textContent:(d.members ?? g.members ?? "?")+" üye · "+kanallar.length+" kanal · "+roller.length+" rol"}),
-    h("h4",{textContent:"Bot ayarları"}),
-    h("div",{className:"alan"}, alan("Log kanalı",logS), alan("Karşılama kanalı",hosS), alan("Otomatik rol",rolS),
-      h("div",{className:"satir"}, h("button",{className:"btn",type:"button",textContent:"Ayarları kaydet",async onclick(){
-        await calistir("/api/guilds/"+g.id+"/settings",{log_kanal:logS.value,hosgeldin_kanal:hosS.value,otorol:rolS.value},"Ayarlar kaydedildi.");}}))),
-    h("h4",{textContent:"Mesaj gönder"}),
-    h("div",{className:"alan"}, alan("Kanal",kanS), alan("Mesaj",metin),
-      h("div",{className:"satir"}, h("button",{className:"btn",type:"button",textContent:"Gönder",async onclick(){
-        if(!kanS.value||!metin.value.trim()) return say("Kanal ve mesaj gerekli.",false);
-        if(await calistir("/api/guilds/"+g.id+"/send",{channel_id:kanS.value,text:metin.value},"Mesaj gönderildi.")) metin.value="";}}))),
-    h("h4",{textContent:"Üye işlemi"}),
-    h("div",{className:"alan"}, alan("İşlem",eylem), alan("Kullanıcı ID",uid), alan("Süre (dakika, sadece sustur için)",dk), alan("Sebep",sebep),
-      h("div",{className:"satir"}, h("button",{className:"btn tehlike",type:"button",textContent:"Uygula",async onclick(){
-        if(!/^\d{15,22}$/.test(uid.value.trim())) return say("Geçerli bir kullanıcı ID gir.",false);
-        if(!confirm("Bu işlem uygulansın mı?")) return;
-        await calistir("/api/guilds/"+g.id+"/mod",{action:eylem.value,user_id:uid.value.trim(),minutes:+dk.value,reason:sebep.value},"İşlem uygulandı.");}}))),
-    h("h4",{textContent:"Tehlikeli bölge"}),
-    h("div",{className:"satir",style:"margin-top:0"}, h("button",{className:"btn tehlike",type:"button",textContent:"Botu bu sunucudan çıkar",async onclick(){
-      if(!confirm(g.name+" sunucusundan bot çıkarılsın mı?")) return;
-      if(await calistir("/api/guilds/"+g.id+"/leave",{},"Bot sunucudan ayrıldı.")){ $("#yonet").close(); panel(); }}})),
-    durum,
-    h("div",{className:"satir"}, h("button",{className:"btn sade",type:"button",textContent:"Kapat",onclick(){$("#yonet").close()}})));
-}
-
-token ? panel() : girisButonlari();
-</script>
-</body>
-</html>
