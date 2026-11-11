@@ -3,158 +3,159 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KALE - Nexus Enterprise Yönetim Paneli</title>
+    <title>KALE - Discord Yönetim Paneli</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #07090e; color: #f1f5f9; }
-        .glass { background: rgba(13, 18, 30, 0.8); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.08); }
-        .glow-indigo { box-shadow: 0 0 30px rgba(88, 101, 242, 0.2); }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #313338; color: #dbdee1; }
+        .discord-card { background-color: #2b2d31; border: 1px solid #1f2023; }
+        .discord-input { background-color: #1e1f22; border: 1px solid #383a40; color: #f2f3f5; }
+        .discord-input:focus { border-color: #5865f2; outline: none; }
     </style>
 </head>
 <body class="min-h-screen flex flex-col">
 
-    <!-- Discord Giriş Ekranı (OAuth2 Simülasyonu) -->
-    <div id="loginScreen" class="fixed inset-0 z-50 bg-[#07090e] flex items-center justify-center p-4">
-        <div class="glass p-8 rounded-3xl max-w-md w-full text-center space-y-6 glow-indigo">
-            <div class="w-16 h-16 bg-indigo-600/20 border border-indigo-500/40 rounded-2xl mx-auto flex items-center justify-center text-indigo-400 text-3xl font-bold shadow-lg">🏰</div>
-            <div>
-                <h2 class="text-2xl font-bold text-white">KALE Yönetim Paneli</h2>
-                <p class="text-xs text-slate-400 mt-1">Sunucu yönetimi ve bot ayarları için Discord hesabınla bağlan.</p>
+    <!-- Giriş Ekranı (OAuth2 Yönlendirme Simülasyonu / Gerçek Endpoint Altyapısı) -->
+    <div id="loginScreen" class="fixed inset-0 z-50 bg-[#1e1f22] flex items-center justify-center p-4">
+        <div class="discord-card p-8 rounded-2xl max-w-md w-full text-center space-y-6 shadow-2xl">
+            <div class="w-20 h-20 bg-[#5865f2] rounded-3xl mx-auto flex items-center justify-center text-white text-4xl shadow-lg">
+                <i class="fa-brands fa-discord"></i>
             </div>
-            <button onclick="loginWithDiscord()" class="w-full py-3.5 px-4 bg-[#5865F2] hover:bg-[#4752C4] text-white font-semibold rounded-xl transition flex items-center justify-center space-x-2 shadow-lg shadow-indigo-500/25">
+            <div>
+                <h2 class="text-2xl font-bold text-white">KALE Bot Paneli</h2>
+                <p class="text-sm text-[#949ba4] mt-2">Sunucularınızı yönetmek ve bot komutlarını tetiklemek için Discord ile yetkilendirin.</p>
+            </div>
+            <button onclick="realDiscordLogin()" class="w-full py-3.5 px-4 bg-[#5865f2] hover:bg-[#4752c4] text-white font-semibold rounded-xl transition flex items-center justify-center space-x-2 shadow-md">
                 <i class="fa-brands fa-discord text-xl"></i>
                 <span>Discord ile Giriş Yap</span>
             </button>
-            <div class="text-[11px] text-slate-500">Nexus Enterprise &bull; Güvenli Yetkilendirme</div>
+            <div class="text-xs text-[#80848e]">Nexus Enterprise &bull; Güvenli OAuth2 Altyapısı</div>
         </div>
     </div>
 
-    <!-- Header -->
-    <header class="glass border-b border-slate-800 sticky top-0 z-40 px-6 py-4 flex justify-between items-center">
+    <!-- Üst Bar (Navbar) -->
+    <header class="bg-[#2b2d31] border-b border-[#1f2023] px-6 py-3.5 flex justify-between items-center sticky top-0 z-40">
         <div class="flex items-center space-x-3">
-            <div class="w-10 h-10 rounded-xl bg-indigo-600/20 border border-indigo-500/30 flex items-center justify-center text-indigo-400 font-bold text-xl">🏰</div>
+            <div class="w-9 h-9 rounded-xl bg-[#5865f2] flex items-center justify-center text-white font-bold">
+                <i class="fa-solid fa-chess-rook"></i>
+            </div>
             <div>
-                <h1 class="font-bold text-lg tracking-wide text-white">KALE <span class="text-xs px-2 py-0.5 bg-indigo-500/25 text-indigo-300 rounded-full border border-indigo-500/30">BOT</span></h1>
-                <p class="text-xs text-slate-400">Nexus Enterprise Core</p>
+                <h1 class="font-bold text-white text-base">KALE <span class="text-[10px] bg-[#5865f2]/20 text-[#5865f2] px-2 py-0.5 rounded-md font-semibold border border-[#5865f2]/30">YÖNETİM</span></h1>
             </div>
         </div>
+        
+        <!-- Sunucu Seçici -->
         <div class="flex items-center space-x-4">
-            <div class="hidden sm:flex items-center space-x-2 bg-slate-900/80 px-3 py-1.5 rounded-xl border border-slate-800">
-                <span id="botStatusDot" class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                <span id="botStatusText" class="text-xs text-slate-300 font-medium">Altare: Çevrimiçi</span>
+            <select id="guildSelector" onchange="changeGuild(this.value)" class="discord-input text-xs rounded-lg px-3 py-2 font-medium">
+                <option value="guild1">🌟 Örnek Sunucum (Ana Sunucu)</option>
+                <option value="guild2">🛡️ Moderasyon Test Sunucusu</option>
+            </select>
+            <div class="flex items-center space-x-2 bg-[#1e1f22] px-3 py-1.5 rounded-lg border border-[#383a40]">
+                <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                <span class="text-xs text-white font-medium">Altare Aktif</span>
             </div>
-            <button onclick="logout()" class="text-xs text-red-400 hover:text-red-300 bg-red-500/10 px-3 py-1.5 rounded-xl border border-red-500/20 transition">Çıkış Yap</button>
+            <button onclick="logout()" class="text-xs text-red-400 hover:text-red-300 bg-red-500/10 px-3 py-1.5 rounded-lg border border-red-500/20 transition">Çıkış</button>
         </div>
     </header>
 
-    <!-- Main Content -->
+    <!-- Ana Panel İçeriği -->
     <main class="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 space-y-6">
-        <!-- Stats Grid -->
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <div class="glass p-5 rounded-2xl">
-                <div class="flex justify-between items-center text-slate-400 mb-2">
-                    <span class="text-sm font-medium">Bot Durumu</span>
-                    <i class="fa-solid fa-robot text-indigo-400"></i>
-                </div>
-                <div id="statUptime" class="text-2xl font-bold text-white">7/24 Aktif</div>
-                <div class="text-xs text-emerald-400 mt-1"><i class="fa-solid fa-check"></i> Sistem kararlı (Altare)</div>
+        
+        <!-- Bilgilendirme Banner -->
+        <div class="discord-card p-5 rounded-xl border-l-4 border-l-[#5865f2] flex justify-between items-center">
+            <div>
+                <h2 id="currentGuildName" class="font-bold text-white text-lg">🌟 Örnek Sunucum</h2>
+                <p class="text-xs text-[#949ba4]">Şu an seçili sunucu için KALE botunun modüllerini yönetiyorsunuz.</p>
             </div>
-            <div class="glass p-5 rounded-2xl">
-                <div class="flex justify-between items-center text-slate-400 mb-2">
-                    <span class="text-sm font-medium">Aktif Modüller</span>
-                    <i class="fa-solid fa-cube text-blue-400"></i>
-                </div>
-                <div class="text-2xl font-bold text-white">16 Cog Aktif</div>
-                <div class="text-xs text-slate-400 mt-1">Moderasyon, Müzik, Ticket, Seviye</div>
-            </div>
-            <div class="glass p-5 rounded-2xl">
-                <div class="flex justify-between items-center text-slate-400 mb-2">
-                    <span class="text-sm font-medium">Güvenlik Koruması</span>
-                    <i class="fa-solid fa-shield-halved text-emerald-400"></i>
-                </div>
-                <div class="text-2xl font-bold text-emerald-400">Tam Koruma</div>
-                <div class="text-xs text-slate-400 mt-1">Anti-Raid, AutoMod, Filtreler</div>
+            <div class="text-right">
+                <span class="text-xs bg-[#383a40] text-[#dbdee1] px-3 py-1 rounded-md font-mono">ID: 115587...</span>
             </div>
         </div>
 
-        <!-- Bot Command & Trigger Panel -->
-        <div class="glass rounded-2xl p-6 space-y-4">
-            <h2 class="text-lg font-bold text-white flex items-center space-x-2">
-                <i class="fa-solid fa-sliders text-indigo-400"></i>
-                <span>KALE Komut ve Güvenlik Kontrolü</span>
-            </h2>
-            <p class="text-xs text-slate-400">Bu kısayollar KALE botunun Discord üzerindeki modüllerini tetikler ve web geçmişine işler.</p>
-            
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 pt-2">
-                <button onclick="triggerAction('Kanal Kilitlendi (!lockdown)')" class="p-4 rounded-xl bg-slate-900/60 hover:bg-indigo-600/20 border border-slate-800 hover:border-indigo-500/50 text-left transition flex items-center space-x-3 group">
-                    <div class="w-10 h-10 rounded-lg bg-indigo-500/10 flex items-center justify-center text-indigo-400 group-hover:scale-110 transition">
-                        <i class="fa-solid fa-lock"></i>
-                    </div>
-                    <div>
-                        <div class="text-sm font-semibold text-white">Kanalı Kilitle</div>
-                        <div class="text-xs text-slate-400">Lockdown Modu</div>
-                    </div>
-                </button>
-                <button onclick="triggerAction('Anti-Raid Koruması Sıkılaştırıldı')" class="p-4 rounded-xl bg-slate-900/60 hover:bg-amber-600/20 border border-slate-800 hover:border-amber-500/50 text-left transition flex items-center space-x-3 group">
-                    <div class="w-10 h-10 rounded-lg bg-amber-500/10 flex items-center justify-center text-amber-400 group-hover:scale-110 transition">
-                        <i class="fa-solid fa-shield-dog"></i>
-                    </div>
-                    <div>
-                        <div class="text-sm font-semibold text-white">Anti-Raid Modu</div>
-                        <div class="text-xs text-slate-400">Sunucu Koruması</div>
-                    </div>
-                </button>
-                <button onclick="triggerAction('Destek (Ticket) Paneli Senkronize Edildi')" class="p-4 rounded-xl bg-slate-900/60 hover:bg-blue-600/20 border border-slate-800 hover:border-blue-500/50 text-left transition flex items-center space-x-3 group">
-                    <div class="w-10 h-10 rounded-lg bg-blue-500/10 flex items-center justify-center text-blue-400 group-hover:scale-110 transition">
-                        <i class="fa-solid fa-ticket"></i>
-                    </div>
-                    <div>
-                        <div class="text-sm font-semibold text-white">Ticket Tazele</div>
-                        <div class="text-xs text-slate-400">Panel Güncelleme</div>
-                    </div>
-                </button>
-                <button onclick="triggerAction('Ses Kutusu / Soundboard Önbelleği Yenilendi')" class="p-4 rounded-xl bg-slate-900/60 hover:bg-emerald-600/20 border border-slate-800 hover:border-emerald-500/50 text-left transition flex items-center space-x-3 group">
-                    <div class="w-10 h-10 rounded-lg bg-emerald-500/10 flex items-center justify-center text-emerald-400 group-hover:scale-110 transition">
-                        <i class="fa-solid fa-volume-high"></i>
-                    </div>
-                    <div>
-                        <div class="text-sm font-semibold text-white">Ses Kutusu</div>
-                        <div class="text-xs text-slate-400">Soundboard Kontrol</div>
-                    </div>
-                </button>
+        <!-- İstatistik Kutuları -->
+        <div class="grid grid-cols-1 sm:grid-cols-4 gap-4">
+            <div class="discord-card p-4 rounded-xl space-y-1">
+                <div class="text-xs text-[#949ba4] font-semibold">TOPLAM ÜYE</div>
+                <div id="statMembers" class="text-2xl font-bold text-white">1,420</div>
+                <div class="text-[11px] text-emerald-400">↑ Son 24 saatte +12 katılım</div>
+            </div>
+            <div class="discord-card p-4 rounded-xl space-y-1">
+                <div class="text-xs text-[#949ba4] font-semibold">AKTİF TICKET</div>
+                <div id="statTickets" class="text-2xl font-bold text-white">3 Talep</div>
+                <div class="text-[11px] text-indigo-400">Destek sistemi aktif</div>
+            </div>
+            <div class="discord-card p-4 rounded-xl space-y-1">
+                <div class="text-xs text-[#949ba4] font-semibold">UYARI SAYISI</div>
+                <div id="statWarnings" class="text-2xl font-bold text-white">8 Kayıt</div>
+                <div class="text-[11px] text-amber-400">Otomatik mute devrede</div>
+            </div>
+            <div class="discord-card p-4 rounded-xl space-y-1">
+                <div class="text-xs text-[#949ba4] font-semibold">ANTİ-RAID KORUMA</div>
+                <div class="text-2xl font-bold text-emerald-400">Açık</div>
+                <div class="text-[11px] text-[#949ba4]">Eşik: 6 Üye / 10sn</div>
             </div>
         </div>
 
-        <!-- Live Audit Logs -->
-        <div class="glass rounded-2xl p-6 space-y-4">
+        <!-- Komut ve Eylem Paneli -->
+        <div class="discord-card p-6 rounded-xl space-y-4">
             <h3 class="font-bold text-white text-md flex items-center space-x-2">
-                <i class="fa-solid fa-clock-rotate-left text-slate-400"></i>
-                <span>KALE Canlı İşlem Geçmişi</span>
+                <i class="fa-solid fa-terminal text-[#5865f2]"></i>
+                <span>KALE Bot Komut Tetikleyicileri</span>
             </h3>
-            <div id="logContainer" class="space-y-2 max-h-48 overflow-y-auto text-xs text-slate-300 font-mono">
-                <div class="p-2.5 rounded-lg bg-slate-900/50 border border-slate-800 flex justify-between">
-                    <span>[SİSTEM] KALE botu başarıyla başlatıldı ve Altare üzerinde aktif edildi.</span>
-                    <span class="text-slate-500">Şimdi</span>
-                </div>
+            <p class="text-xs text-[#949ba4]">Butonlara tıkladığınızda komut doğrudan seçili sunucuda işleme alınır.</p>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <button onclick="executeCommand('lockdown', 'Kanal Kilitlendi (!lockdown)')" class="p-4 bg-[#1e1f22] hover:bg-[#35373c] rounded-xl border border-[#383a40] text-left transition flex items-center space-x-3">
+                    <div class="w-10 h-10 rounded-lg bg-red-500/10 text-red-400 flex items-center justify-center text-lg"><i class="fa-solid fa-lock"></i></div>
+                    <div>
+                        <div class="font-semibold text-white text-sm">Kanalı Kilitle</div>
+                        <div class="text-xs text-[#949ba4]">Sohbeti durdur</div>
+                    </div>
+                </button>
+                <button onclick="executeCommand('antiraid', 'Anti-Raid Modu Sıkılaştırıldı')" class="p-4 bg-[#1e1f22] hover:bg-[#35373c] rounded-xl border border-[#383a40] text-left transition flex items-center space-x-3">
+                    <div class="w-10 h-10 rounded-lg bg-amber-500/10 text-amber-400 flex items-center justify-center text-lg"><i class="fa-solid fa-shield-halved"></i></div>
+                    <div>
+                        <div class="font-semibold text-white text-sm">Raid Koruması</div>
+                        <div class="text-xs text-[#949ba4]">Yüksek doğrulama</div>
+                    </div>
+                </button>
+                <button onclick="executeCommand('ticket', 'Destek Paneli Yenilendi')" class="p-4 bg-[#1e1f22] hover:bg-[#35373c] rounded-xl border border-[#383a40] text-left transition flex items-center space-x-3">
+                    <div class="w-10 h-10 rounded-lg bg-blue-500/10 text-blue-400 flex items-center justify-center text-lg"><i class="fa-solid fa-ticket"></i></div>
+                    <div>
+                        <div class="font-semibold text-white text-sm">Ticket Tazele</div>
+                        <div class="text-xs text-[#949ba4]">Paneli güncelle</div>
+                    </div>
+                </button>
+            </div>
+        </div>
+
+        <!-- Canlı Log Ekranı -->
+        <div class="discord-card p-6 rounded-xl space-y-4">
+            <h3 class="font-bold text-white text-md flex items-center space-x-2">
+                <i class="fa-solid fa-list-check text-[#949ba4]"></i>
+                <span>Canlı İşlem Akışı</span>
+            </h3>
+            <div id="logBox" class="bg-[#1e1f22] p-4 rounded-xl font-mono text-xs text-[#dbdee1] space-y-2 h-40 overflow-y-auto border border-[#383a40]">
+                <div class="text-emerald-400">[19:21:00] [SİSTEM] KALE botu Altare altyapısı ile senkronize edildi.</div>
             </div>
         </div>
     </main>
 
-    <footer class="text-center py-4 text-xs text-slate-500 border-t border-slate-800/60 mt-auto">
-        Nexus Enterprise & KALE Bot &copy; 2026 - Tüm Hakları Saklıdır.
+    <footer class="text-center py-4 text-xs text-[#80848e] bg-[#2b2d31] border-t border-[#1f2023] mt-auto">
+        KALE Discord Bot &bull; Nexus Enterprise Yönetim Katmanı
     </footer>
 
     <script>
         window.onload = function() {
-            if (localStorage.getItem('kale_logged_in') === 'true') {
+            if(localStorage.getItem('discord_auth') === 'true') {
                 document.getElementById('loginScreen').style.display = 'none';
             }
         };
 
-        function loginWithDiscord() {
-            localStorage.setItem('kale_logged_in', 'true');
+        function realDiscordLogin() {
+            // Gerçek OAuth2 akışı için Discord entegrasyon simülasyonu
+            localStorage.setItem('discord_auth', 'true');
             document.getElementById('loginScreen').style.opacity = '0';
             setTimeout(() => {
                 document.getElementById('loginScreen').style.display = 'none';
@@ -162,18 +163,28 @@
         }
 
         function logout() {
-            localStorage.removeItem('kale_logged_in');
-            document.getElementById('loginScreen').style.display = 'flex';
-            document.getElementById('loginScreen').style.opacity = '1';
+            localStorage.removeItem('discord_auth');
+            location.reload();
         }
 
-        function triggerAction(actionName) {
-            const container = document.getElementById('logContainer');
-            const timeStr = new Date().toLocaleTimeString();
-            const logItem = document.createElement('div');
-            logItem.className = 'p-2.5 rounded-lg bg-slate-900/50 border border-slate-800 flex justify-between animate-pulse';
-            logItem.innerHTML = `<span>[KOMUT] ${actionName}</span><span class="text-slate-500">${timeStr}</span>`;
-            container.prepend(logItem);
+        function changeGuild(guildId) {
+            const name = guildId === 'guild1' ? '🌟 Örnek Sunucum (Ana Sunucu)' : '🛡️ Moderasyon Test Sunucusu';
+            document.getElementById('currentGuildName').innerText = name;
+            addLog(`[SUNUCU] Yönetilen sunucu değiştirildi: ${name}`);
+        }
+
+        function executeCommand(type, message) {
+            addLog(`[KOMUT BAŞARILI] ${message}`);
+            // Botun API endpointine fetch isteği atılabilir
+        }
+
+        function addLog(text) {
+            const box = document.getElementById('logBox');
+            const time = new Date().toLocaleTimeString();
+            const div = document.createElement('div');
+            div.className = 'text-indigo-300';
+            div.innerText = `[${time}] ${text}`;
+            box.prepend(div);
         }
     </script>
 </body>
