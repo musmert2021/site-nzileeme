@@ -4,26 +4,28 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>KALE — Discord sunucu botu</title>
-<meta name="description" content="Moderasyon, seviye, müzik, çekiliş, destek paneli ve daha fazlası. Tüm komutlar ve sunucu paneli.">
+<meta name="description" content="Moderasyon, seviye, müzik, çekiliş, destek paneli ve daha fazlası. Tüm komutlar ve yönetim paneli.">
 <link rel="icon" href="assets/profil_resmi.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&display=swap" rel="stylesheet">
 <style>
-:root{--gece:#14152a;--yuzey:#1d1e3a;--cizgi:#303262;--vurgu:#5865f2;--tas:#f2f3ff;--sis:#9a9dc9;--ok:#3ba55d;--r:14px}
+:root{--gece:#14152a;--yuzey:#1d1e3a;--cizgi:#303262;--vurgu:#5865f2;--tas:#f2f3ff;--sis:#9a9dc9;--ok:#3ba55d;--hata:#ed4245;--r:14px}
 *{box-sizing:border-box;margin:0}
 html{scroll-behavior:smooth}
 body{background:var(--gece) url(assets/arka_plan.png) top center/1200px auto no-repeat;color:var(--tas);font:400 16px/1.6 "Bricolage Grotesque",system-ui,sans-serif}
 a{color:inherit}
 :focus-visible{outline:2px solid var(--vurgu);outline-offset:3px}
 .wrap{max-width:980px;margin:0 auto;padding:0 20px}
-nav{display:flex;align-items:center;gap:16px;padding:18px 0}
+nav{display:flex;align-items:center;gap:12px;padding:18px 0}
 nav .logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:20px;text-decoration:none;margin-right:auto}
 nav .logo img{width:36px;height:36px;border-radius:10px}
+#hesap{display:flex;gap:8px}
 .btn{display:inline-flex;align-items:center;gap:8px;border:0;border-radius:10px;padding:10px 18px;font:600 15px inherit;font-family:inherit;background:var(--vurgu);color:#fff;text-decoration:none;cursor:pointer}
 .btn:hover{background:#4752c4}
 .btn.sade{background:transparent;border:1px solid var(--cizgi);color:var(--tas)}
 .btn.sade:hover{background:var(--yuzey)}
+.btn.tehlike{background:var(--hata)}.btn.tehlike:hover{background:#c93b3e}
 .btn[disabled]{opacity:.5;cursor:default}
 header.hero{padding:56px 0 40px}
 h1{font-size:clamp(40px,7vw,72px);line-height:1.02;font-weight:800;letter-spacing:-.02em;max-width:12ch}
@@ -51,15 +53,21 @@ h2{font-size:30px;font-weight:800;margin-bottom:6px}
 .sun{display:flex;align-items:center;gap:14px;background:var(--yuzey);border:1px solid var(--cizgi);border-radius:var(--r);padding:14px}
 .sun img,.sun .ik{width:52px;height:52px;border-radius:50%;background:var(--cizgi);flex:none;display:grid;place-items:center;font-weight:800}
 .sun div{min-width:0;flex:1}.sun b{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.sun small{color:var(--sis)}.sun small.var{color:var(--ok)}
-.profil{display:flex;align-items:center;gap:10px}.profil img{width:34px;height:34px;border-radius:50%}
-dialog{background:var(--yuzey);color:var(--tas);border:1px solid var(--cizgi);border-radius:var(--r);padding:24px;max-width:560px;width:92vw}
+.sun small{color:var(--sis)}
+dialog{background:var(--yuzey);color:var(--tas);border:1px solid var(--cizgi);border-radius:var(--r);padding:24px;max-width:600px;width:92vw;max-height:90vh;overflow:auto}
 dialog::backdrop{background:#000a}
 dialog h3{font-size:22px;margin-bottom:4px}
-dialog .liste{grid-template-columns:1fr;margin:16px 0;max-height:50vh;overflow:auto}
+dialog h4{font-size:16px;margin:22px 0 8px;padding-top:16px;border-top:1px solid var(--cizgi)}
+.alan{display:grid;gap:10px}
+.alan label{display:grid;gap:4px;font-size:14px;color:var(--sis)}
+.alan input,.alan select,.alan textarea{background:var(--gece);border:1px solid var(--cizgi);border-radius:8px;color:var(--tas);padding:9px 12px;font:inherit}
+.alan textarea{min-height:80px;resize:vertical}
+.satir{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.durum{min-height:24px;margin-top:12px;font-size:14px;color:var(--sis)}
+.durum.ok{color:var(--ok)}.durum.hata{color:var(--hata)}
 .bos{border:1px dashed var(--cizgi);border-radius:var(--r);padding:28px;text-align:center;color:var(--sis)}
 footer{border-top:1px solid var(--cizgi);padding:26px 0;color:var(--sis);font-size:14px}
-@media(max-width:560px){nav .btn.sade{display:none}}
+@media(max-width:560px){nav .btn.sade.gizle{display:none}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
 </style>
 </head>
@@ -67,13 +75,13 @@ footer{border-top:1px solid var(--cizgi);padding:26px 0;color:var(--sis);font-si
 <div class="wrap">
   <nav>
     <a class="logo" href="#"><img src="assets/profil_resmi.png" alt="">KALE</a>
-    <a class="btn sade" href="#komutlar">Komutlar</a>
+    <a class="btn sade gizle" href="#komutlar">Komutlar</a>
     <span id="hesap"></span>
   </nav>
 
   <header class="hero">
     <h1>Sunucunun kalesi.</h1>
-    <p>Moderasyon, seviye, müzik, çekiliş ve destek paneli tek botta. Aşağıdan bir komut ara ya da Discord ile girip sunucularını gör.</p>
+    <p>Moderasyon, seviye, müzik, çekiliş ve destek paneli tek botta. Bir komut ara ya da yönetici girişi yapıp botun bulunduğu tüm sunucuları yönet.</p>
     <div class="palet">
       <label><b>/</b><input id="ara" type="search" placeholder="komut ara: ban, çal, seviye…" autocomplete="off" aria-label="Komut ara"></label>
       <ul id="sonuc"></ul>
@@ -81,8 +89,8 @@ footer{border-top:1px solid var(--cizgi);padding:26px 0;color:var(--sis);font-si
   </header>
 
   <section id="panel" hidden>
-    <h2>Sunucuların</h2>
-    <p class="alt">Yönetici olduğun sunucular. Botu ekli olanları yönetebilir, olmayanlara botu ekleyebilirsin.</p>
+    <h2>Sunucular</h2>
+    <p class="alt" id="psayi">Botun bulunduğu tüm sunucular.</p>
     <div id="sunucular" class="sunucular"></div>
   </section>
 
@@ -96,15 +104,27 @@ footer{border-top:1px solid var(--cizgi);padding:26px 0;color:var(--sis);font-si
   <footer>KALE açık kaynaklıdır. <a href="#" id="gh">Kodu GitHub'da gör</a></footer>
 </div>
 
-<dialog id="dlg"><h3 id="dbaslik"></h3><p class="alt">Bu sunucuyu kurmak için Discord'da şu komutları kullan.</p><div class="liste" id="dliste"></div><button class="btn" onclick="dlg.close()">Kapat</button></dialog>
+<dialog id="giris">
+  <form id="gform" class="alan">
+    <h3>Yönetici girişi</h3>
+    <p class="alt" style="margin:0">Şifreyi gir, botun bulunduğu sunucuları yönet.</p>
+    <label>Şifre<input id="sifre" type="password" autocomplete="current-password" required></label>
+    <div class="durum" id="gdurum" role="alert"></div>
+    <div class="satir" style="margin-top:0">
+      <button class="btn" type="submit">Giriş yap</button>
+      <button class="btn sade" type="button" onclick="giris.close()">Vazgeç</button>
+    </div>
+  </form>
+</dialog>
+
+<dialog id="yonet"><div id="ybody"></div></dialog>
 
 <script>
-/* ====== AYARLAR: bunları kendine göre doldur ====== */
-const CLIENT_ID = "BURAYA_BOT_CLIENT_ID";                 // Developer Portal > General Information > Application ID
+/* ====== AYARLAR ====== */
 const API = "https://BURAYA-RENDER-ADRESIN.onrender.com"; // botun çalıştığı adres (keep_alive sunucusu)
 const GITHUB = "https://github.com/KULLANICI/DEPO";
-const IZINLER = 8;                                        // bot izin sayısı (8 = Yönetici)
-/* ================================================== */
+const DAVET = "https://discord.com/oauth2/authorize?client_id=1558755482632724540&permissions=8&integration_type=0&scope=applications.commands+bot";
+/* ===================== */
 
 // [kategori, ad, açıklama, yetki gerekir mi]
 const K = [
@@ -165,7 +185,6 @@ const K = [
 ["Bilgi","sunucubilgi","Sunucunun kısa istatistiklerini getirir."],
 ["Bilgi","kurallar","Sunucu kurallarını kanala gönderir.",1]
 ];
-const KURULUM = ["Ayarlar","Destek","Seviye","Çekiliş","Anti-raid","Karşılama","Rol paneli","İstatistik","Ses kutusu"];
 
 const $ = s => document.querySelector(s);
 function h(tag, attrs = {}, ...kids){
@@ -183,7 +202,7 @@ function komutKarti(k){
     h("code",{textContent:"/"+k[1]}), h("p",{textContent:k[2]}));
 }
 function listeyiCiz(){
-  const L = $("#liste"); L.replaceChildren(...K.filter(k => secili==="Hepsi"||k[0]===secili).map(komutKarti));
+  $("#liste").replaceChildren(...K.filter(k => secili==="Hepsi"||k[0]===secili).map(komutKarti));
   $("#sayi").textContent = K.length + " komut. Sunucuda / yazıp seçerek kullanılır.";
   $("#chips").replaceChildren(...kategoriler.map(c =>
     h("button",{className:"chip",type:"button",textContent:c,"aria-pressed":String(c===secili),onclick(){secili=c;listeyiCiz()}})));
@@ -199,80 +218,114 @@ function aramaCiz(){
     : [h("li",{textContent:"Eşleşen komut yok. Başka bir kelime dene."})]));
 }
 $("#ara").addEventListener("input", aramaCiz); aramaCiz();
-
-/* ---- Discord girişi (implicit grant: statik sitede çalışır) ---- */
-const YONLENDIR = location.origin + location.pathname;
-const girisUrl = "https://discord.com/oauth2/authorize?" + new URLSearchParams({
-  client_id: CLIENT_ID, response_type: "token", scope: "identify guilds", redirect_uri: YONLENDIR, prompt: "none"});
-const davetUrl = id => "https://discord.com/oauth2/authorize?" + new URLSearchParams({
-  client_id: CLIENT_ID, scope: "bot applications.commands", permissions: IZINLER,
-  ...(id ? {guild_id: id, disable_guild_select: "true"} : {})});
-
 $("#gh").href = GITHUB;
-const m = new URLSearchParams(location.hash.slice(1));
-if (m.get("access_token")){
-  try { sessionStorage.setItem("tok", m.get("access_token")); } catch {}
-  history.replaceState(null, "", location.pathname);
+
+/* ---- oturum: şifre sunucuda doğrulanır, tarayıcıda sadece token tutulur ---- */
+let token = (() => { try { return sessionStorage.getItem("tok"); } catch { return null; } })();
+const sakla = t => { token = t; try { t ? sessionStorage.setItem("tok", t) : sessionStorage.removeItem("tok"); } catch {} };
+
+async function api(yol, govde){
+  const r = await fetch(API + yol, {
+    method: govde ? "POST" : "GET",
+    headers: {"Content-Type":"application/json", ...(token ? {Authorization:"Bearer "+token} : {})},
+    body: govde ? JSON.stringify(govde) : undefined});
+  let j = {}; try { j = await r.json(); } catch {}
+  if (r.status === 401) { sakla(null); girisButonlari(); $("#panel").hidden = true; throw new Error("Oturum süresi doldu, tekrar giriş yap."); }
+  if (!r.ok) throw new Error(j.error || "İşlem başarısız ("+r.status+")");
+  return j;
 }
-const token = (() => { try { return sessionStorage.getItem("tok"); } catch { return null; } })();
 
 function girisButonlari(){
   $("#hesap").replaceChildren(
-    h("a",{className:"btn sade",href:davetUrl(),textContent:"Botu ekle"}),
-    " ",
-    h("a",{className:"btn",href:girisUrl,textContent:"Discord ile giriş"}));
+    h("a",{className:"btn sade",href:DAVET,textContent:"Botu ekle"}),
+    h("button",{className:"btn",type:"button",textContent:"Yönetici girişi",onclick(){$("#gdurum").textContent="";$("#giris").showModal();$("#sifre").focus()}}));
 }
-async function discord(yol){
-  const r = await fetch("https://discord.com/api/v10"+yol,{headers:{Authorization:"Bearer "+token}});
-  if (!r.ok) throw new Error(r.status);
-  return r.json();
-}
-function cikis(){ try{sessionStorage.removeItem("tok")}catch{} location.reload(); }
+function cikis(){ sakla(null); location.reload(); }
 
-function sunucuKarti(g, botVar){
+$("#gform").addEventListener("submit", async e => {
+  e.preventDefault();
+  const d = $("#gdurum"); d.className = "durum"; d.textContent = "Kontrol ediliyor…";
+  try {
+    const j = await api("/api/login", {password: $("#sifre").value});
+    sakla(j.token); $("#sifre").value = ""; $("#giris").close(); panel();
+  } catch(err) { d.className = "durum hata"; d.textContent = err.message === "Failed to fetch" ? "Bot sunucusuna ulaşılamadı." : err.message; }
+});
+
+/* ---- sunucu listesi ---- */
+function sunucuKarti(g){
   const ikon = g.icon ? h("img",{src:`https://cdn.discordapp.com/icons/${g.id}/${g.icon}.png?size=128`,alt:""})
                       : h("div",{className:"ik",textContent:g.name.slice(0,1).toUpperCase()});
-  const durum = botVar === true ? h("small",{className:"var",textContent:"Bot ekli"})
-              : botVar === false ? h("small",{textContent:"Bot ekli değil"}) : h("small",{textContent:"Bot durumu alınamadı"});
-  const eylem = botVar === true
-    ? h("button",{className:"btn",type:"button",textContent:"Kurulum",onclick(){kurulumAc(g)}})
-    : h("a",{className:"btn sade",href:davetUrl(g.id),textContent:"Botu ekle"});
-  return h("div",{className:"sun"}, ikon, h("div",{}, h("b",{textContent:g.name}), durum), eylem);
+  return h("div",{className:"sun"}, ikon,
+    h("div",{}, h("b",{textContent:g.name}), h("small",{textContent:(g.members ?? "?")+" üye"})),
+    h("button",{className:"btn",type:"button",textContent:"Yönet",onclick(){yonetAc(g)}}));
 }
-function kurulumAc(g){
-  $("#dbaslik").textContent = g.name;
-  $("#dliste").replaceChildren(...K.filter(k => k[3] && KURULUM.includes(k[0])).map(komutKarti));
-  $("#dlg").showModal();
-}
-
 async function panel(){
-  try{
-    const [ben, sunucular] = await Promise.all([discord("/users/@me"), discord("/users/@me/guilds")]);
-    $("#hesap").replaceChildren(h("span",{className:"profil"},
-      ben.avatar ? h("img",{src:`https://cdn.discordapp.com/avatars/${ben.id}/${ben.avatar}.png?size=64`,alt:""}) : null,
-      h("b",{textContent:ben.global_name || ben.username}),
-      h("button",{className:"btn sade",type:"button",textContent:"Çıkış",onclick:cikis})));
-    const yonetilen = sunucular.filter(g => g.owner || (BigInt(g.permissions) & 8n) !== 0n);
-    let botlu = null;
-    try{
-      const r = await fetch(API+"/api/mutual",{method:"POST",headers:{"Content-Type":"application/json"},
-        body:JSON.stringify({ids:yonetilen.map(g=>g.id)})});
-      botlu = new Set((await r.json()).ids.map(String));
-    }catch{}
+  $("#hesap").replaceChildren(
+    h("a",{className:"btn sade",href:DAVET,textContent:"Botu ekle"}),
+    h("button",{className:"btn sade",type:"button",textContent:"Çıkış",onclick:cikis}));
+  try {
+    const liste = await api("/api/guilds");
     $("#panel").hidden = false;
-    const kutu = $("#sunucular");
-    if (!yonetilen.length){
-      kutu.replaceChildren(h("div",{className:"bos",textContent:"Yönetici olduğun bir sunucu bulunamadı."}));
-      return;
-    }
-    yonetilen.sort((a,b) => (botlu?.has(b.id)||0) - (botlu?.has(a.id)||0));
-    kutu.replaceChildren(...yonetilen.map(g => sunucuKarti(g, botlu ? botlu.has(g.id) : undefined)));
-    $("#panel").scrollIntoView();
-  }catch{
-    try{sessionStorage.removeItem("tok")}catch{}
-    girisButonlari();
+    $("#psayi").textContent = "Bot " + liste.length + " sunucuda. Yönetmek istediğini seç.";
+    $("#sunucular").replaceChildren(...(liste.length ? liste.map(sunucuKarti)
+      : [h("div",{className:"bos",textContent:"Bot henüz hiçbir sunucuda değil. Üstteki “Botu ekle” ile ekle."})]));
+  } catch(err) {
+    if (token) { $("#panel").hidden = false; $("#sunucular").replaceChildren(h("div",{className:"bos",textContent:err.message})); }
   }
 }
+
+/* ---- sunucu yönetimi ---- */
+const sel = (secenekler, deger, bos) => {
+  const s = h("select");
+  if (bos) s.append(h("option",{value:"",textContent:bos}));
+  secenekler.forEach(o => s.append(h("option",{value:o.id,textContent:o.name,selected:String(o.id)===String(deger)})));
+  return s;
+};
+const alan = (etiket, el) => h("label",{}, etiket, el);
+
+async function yonetAc(g){
+  const body = $("#ybody");
+  body.replaceChildren(h("p",{className:"alt",textContent:"Yükleniyor…"}));
+  $("#yonet").showModal();
+  let d;
+  try { d = await api("/api/guilds/"+g.id); }
+  catch(err){ body.replaceChildren(h("p",{className:"durum hata",textContent:err.message}), h("button",{className:"btn sade",textContent:"Kapat",onclick(){$("#yonet").close()}})); return; }
+
+  const durum = h("div",{className:"durum",role:"status"});
+  const say = (m, ok=true) => { durum.className = "durum " + (ok ? "ok" : "hata"); durum.textContent = m; };
+  const calistir = async (yol, govde, basari) => { say("İşleniyor…"); try { await api(yol, govde); say(basari); return true; } catch(e){ say(e.message,false); return false; } };
+  const kanallar = d.channels || [], roller = d.roles || [], ay = d.settings || {};
+
+  const logS = sel(kanallar, ay.log_kanal, "— seçilmedi —"), hosS = sel(kanallar, ay.hosgeldin_kanal, "— seçilmedi —"), rolS = sel(roller, ay.otorol, "— seçilmedi —");
+  const kanS = sel(kanallar, "", "Kanal seç"), metin = h("textarea",{placeholder:"Gönderilecek mesaj"});
+  const eylem = h("select"); [["ban","Yasakla"],["kick","At"],["timeout","Sustur"],["unban","Banı kaldır"]].forEach(([v,t]) => eylem.append(h("option",{value:v,textContent:t})));
+  const uid = h("input",{placeholder:"Kullanıcı ID",inputMode:"numeric"}), dk = h("input",{type:"number",min:1,value:10}), sebep = h("input",{placeholder:"Sebep (isteğe bağlı)"});
+
+  body.replaceChildren(
+    h("h3",{textContent:g.name}), h("p",{className:"alt",textContent:(d.members ?? g.members ?? "?")+" üye · "+kanallar.length+" kanal · "+roller.length+" rol"}),
+    h("h4",{textContent:"Bot ayarları"}),
+    h("div",{className:"alan"}, alan("Log kanalı",logS), alan("Karşılama kanalı",hosS), alan("Otomatik rol",rolS),
+      h("div",{className:"satir"}, h("button",{className:"btn",type:"button",textContent:"Ayarları kaydet",async onclick(){
+        await calistir("/api/guilds/"+g.id+"/settings",{log_kanal:logS.value,hosgeldin_kanal:hosS.value,otorol:rolS.value},"Ayarlar kaydedildi.");}}))),
+    h("h4",{textContent:"Mesaj gönder"}),
+    h("div",{className:"alan"}, alan("Kanal",kanS), alan("Mesaj",metin),
+      h("div",{className:"satir"}, h("button",{className:"btn",type:"button",textContent:"Gönder",async onclick(){
+        if(!kanS.value||!metin.value.trim()) return say("Kanal ve mesaj gerekli.",false);
+        if(await calistir("/api/guilds/"+g.id+"/send",{channel_id:kanS.value,text:metin.value},"Mesaj gönderildi.")) metin.value="";}}))),
+    h("h4",{textContent:"Üye işlemi"}),
+    h("div",{className:"alan"}, alan("İşlem",eylem), alan("Kullanıcı ID",uid), alan("Süre (dakika, sadece sustur için)",dk), alan("Sebep",sebep),
+      h("div",{className:"satir"}, h("button",{className:"btn tehlike",type:"button",textContent:"Uygula",async onclick(){
+        if(!/^\d{15,22}$/.test(uid.value.trim())) return say("Geçerli bir kullanıcı ID gir.",false);
+        if(!confirm("Bu işlem uygulansın mı?")) return;
+        await calistir("/api/guilds/"+g.id+"/mod",{action:eylem.value,user_id:uid.value.trim(),minutes:+dk.value,reason:sebep.value},"İşlem uygulandı.");}}))),
+    h("h4",{textContent:"Tehlikeli bölge"}),
+    h("div",{className:"satir",style:"margin-top:0"}, h("button",{className:"btn tehlike",type:"button",textContent:"Botu bu sunucudan çıkar",async onclick(){
+      if(!confirm(g.name+" sunucusundan bot çıkarılsın mı?")) return;
+      if(await calistir("/api/guilds/"+g.id+"/leave",{},"Bot sunucudan ayrıldı.")){ $("#yonet").close(); panel(); }}})),
+    durum,
+    h("div",{className:"satir"}, h("button",{className:"btn sade",type:"button",textContent:"Kapat",onclick(){$("#yonet").close()}})));
+}
+
 token ? panel() : girisButonlari();
 </script>
 </body>
