@@ -1,275 +1,279 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KALE Bot - Nexus Enterprise Ultimate Command Center</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #18191c; color: #dbdee1; }
-        .sidebar { background-color: #2b2d31; }
-        .card-bg { background-color: #313338; border: 1px solid #383a40; }
-        .input-dark { background-color: #1e1f22; border: 1px solid #383a40; color: #fff; }
-        .input-dark:focus { border-color: #5865f2; outline: none; }
-        ::-webkit-scrollbar { width: 8px; height: 8px; }
-        ::-webkit-scrollbar-track { background: #2b2d31; }
-        ::-webkit-scrollbar-thumb { background: #1e1f22; border-radius: 4px; }
-    </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>KALE — Discord sunucu botu</title>
+<meta name="description" content="Moderasyon, seviye, müzik, çekiliş, destek paneli ve daha fazlası. Tüm komutlar ve sunucu paneli.">
+<link rel="icon" href="assets/profil_resmi.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&display=swap" rel="stylesheet">
+<style>
+:root{--gece:#14152a;--yuzey:#1d1e3a;--cizgi:#303262;--vurgu:#5865f2;--tas:#f2f3ff;--sis:#9a9dc9;--ok:#3ba55d;--r:14px}
+*{box-sizing:border-box;margin:0}
+html{scroll-behavior:smooth}
+body{background:var(--gece) url(assets/arka_plan.png) top center/1200px auto no-repeat;color:var(--tas);font:400 16px/1.6 "Bricolage Grotesque",system-ui,sans-serif}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--vurgu);outline-offset:3px}
+.wrap{max-width:980px;margin:0 auto;padding:0 20px}
+nav{display:flex;align-items:center;gap:16px;padding:18px 0}
+nav .logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:20px;text-decoration:none;margin-right:auto}
+nav .logo img{width:36px;height:36px;border-radius:10px}
+.btn{display:inline-flex;align-items:center;gap:8px;border:0;border-radius:10px;padding:10px 18px;font:600 15px inherit;font-family:inherit;background:var(--vurgu);color:#fff;text-decoration:none;cursor:pointer}
+.btn:hover{background:#4752c4}
+.btn.sade{background:transparent;border:1px solid var(--cizgi);color:var(--tas)}
+.btn.sade:hover{background:var(--yuzey)}
+.btn[disabled]{opacity:.5;cursor:default}
+header.hero{padding:56px 0 40px}
+h1{font-size:clamp(40px,7vw,72px);line-height:1.02;font-weight:800;letter-spacing:-.02em;max-width:12ch}
+.hero p{color:var(--sis);max-width:46ch;margin:18px 0 26px;font-size:18px}
+.palet{background:var(--yuzey);border:1px solid var(--cizgi);border-radius:var(--r);overflow:hidden;max-width:620px}
+.palet label{display:flex;align-items:center;gap:10px;padding:14px 18px;border-bottom:1px solid var(--cizgi)}
+.palet label b{color:var(--vurgu);font-size:22px}
+.palet input{flex:1;background:none;border:0;color:var(--tas);font:600 18px inherit;font-family:inherit;outline:0}
+.palet ul{list-style:none;padding:6px;max-height:210px;overflow:auto}
+.palet li{display:flex;gap:12px;padding:8px 12px;border-radius:8px;cursor:pointer}
+.palet li:hover{background:var(--cizgi)}
+.palet li strong{white-space:nowrap}.palet li span{color:var(--sis);font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+section{padding:44px 0}
+h2{font-size:30px;font-weight:800;margin-bottom:6px}
+.alt{color:var(--sis);margin-bottom:22px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px}
+.chip{border:1px solid var(--cizgi);background:none;color:var(--sis);border-radius:99px;padding:6px 14px;font:600 14px inherit;font-family:inherit;cursor:pointer}
+.chip[aria-pressed=true]{background:var(--vurgu);border-color:var(--vurgu);color:#fff}
+.liste{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:10px}
+.kom{background:var(--yuzey);border:1px solid var(--cizgi);border-radius:var(--r);padding:14px 16px}
+.kom code{font:700 16px inherit;font-family:inherit;color:#fff}
+.kom p{color:var(--sis);font-size:14px;margin-top:4px}
+.rozet{float:right;font-size:12px;color:var(--sis);border:1px solid var(--cizgi);border-radius:6px;padding:0 7px}
+.sunucular{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px}
+.sun{display:flex;align-items:center;gap:14px;background:var(--yuzey);border:1px solid var(--cizgi);border-radius:var(--r);padding:14px}
+.sun img,.sun .ik{width:52px;height:52px;border-radius:50%;background:var(--cizgi);flex:none;display:grid;place-items:center;font-weight:800}
+.sun div{min-width:0;flex:1}.sun b{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sun small{color:var(--sis)}.sun small.var{color:var(--ok)}
+.profil{display:flex;align-items:center;gap:10px}.profil img{width:34px;height:34px;border-radius:50%}
+dialog{background:var(--yuzey);color:var(--tas);border:1px solid var(--cizgi);border-radius:var(--r);padding:24px;max-width:560px;width:92vw}
+dialog::backdrop{background:#000a}
+dialog h3{font-size:22px;margin-bottom:4px}
+dialog .liste{grid-template-columns:1fr;margin:16px 0;max-height:50vh;overflow:auto}
+.bos{border:1px dashed var(--cizgi);border-radius:var(--r);padding:28px;text-align:center;color:var(--sis)}
+footer{border-top:1px solid var(--cizgi);padding:26px 0;color:var(--sis);font-size:14px}
+@media(max-width:560px){nav .btn.sade{display:none}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style>
 </head>
-<body class="min-h-screen flex">
+<body>
+<div class="wrap">
+  <nav>
+    <a class="logo" href="#"><img src="assets/profil_resmi.png" alt="">KALE</a>
+    <a class="btn sade" href="#komutlar">Komutlar</a>
+    <span id="hesap"></span>
+  </nav>
 
-    <!-- Sol Sidebar Menü -->
-    <aside class="sidebar w-72 hidden md:flex flex-col border-r border-[#1f2023] p-4 space-y-6 select-none">
-        <div class="flex items-center space-x-3 px-2 py-2">
-            <div class="w-10 h-10 rounded-2xl bg-[#5865f2] flex items-center justify-center text-white font-bold text-xl shadow-lg">🏰</div>
-            <div>
-                <h2 class="font-bold text-white text-base tracking-wider">KALE BOT</h2>
-                <p class="text-[10px] text-[#949ba4]">Nexus Enterprise Ultimate</p>
-            </div>
-        </div>
-
-        <div class="text-[10px] font-bold text-[#949ba4] px-2 uppercase tracking-wider">YÖNETİM MENÜSÜ</div>
-        <nav class="space-y-1.5 flex-1 overflow-y-auto pr-1">
-            <button onclick="switchPage('home')" id="nav_home" class="w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl bg-[#5865f2] text-white text-xs font-semibold transition shadow-md"><i class="fa-solid fa-house w-5 text-sm"></i><span>Genel Bakış & Durum</span></button>
-            <button onclick="switchPage('mod')" id="nav_mod" class="w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-[#949ba4] hover:bg-[#35373c] hover:text-white text-xs font-semibold transition"><i class="fa-solid fa-gavel w-5 text-sm"></i><span>Moderasyon Komutları</span></button>
-            <button onclick="switchPage('prot')" id="nav_prot" class="w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-[#949ba4] hover:bg-[#35373c] hover:text-white text-xs font-semibold transition"><i class="fa-solid fa-shield-halved w-5 text-sm"></i><span>Güvenlik & Anti-Raid</span></button>
-            <button onclick="switchPage('welcome')" id="nav_welcome" class="w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-[#949ba4] hover:bg-[#35373c] hover:text-white text-xs font-semibold transition"><i class="fa-solid fa-hand-peace w-5 text-sm"></i><span>Hoş Geldin & Rol Ayarı</span></button>
-            <button onclick="switchPage('level')" id="nav_level" class="w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-[#949ba4] hover:bg-[#35373c] hover:text-white text-xs font-semibold transition"><i class="fa-solid fa-chart-line w-5 text-sm"></i><span>Seviye (XP) Sistemi</span></button>
-            <button onclick="switchPage('ticket')" id="nav_ticket" class="w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-[#949ba4] hover:bg-[#35373c] hover:text-white text-xs font-semibold transition"><i class="fa-solid fa-ticket w-5 text-sm"></i><span>Destek / Ticket Paneli</span></button>
-            <button onclick="switchPage('music')" id="nav_music" class="w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-[#949ba4] hover:bg-[#35373c] hover:text-white text-xs font-semibold transition"><i class="fa-solid fa-music w-5 text-sm"></i><span>Müzik & Soundboard</span></button>
-            <button onclick="switchPage('settings')" id="nav_settings" class="w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-[#949ba4] hover:bg-[#35373c] hover:text-white text-xs font-semibold transition"><i class="fa-solid fa-gears w-5 text-sm"></i><span>Bot Sistem Ayarları</span></button>
-        </nav>
-
-        <div class="pt-4 border-t border-[#383a40]">
-            <div class="flex items-center space-x-3 px-2">
-                <div class="w-9 h-9 rounded-full bg-indigo-600 text-white flex items-center justify-center font-bold text-xs shadow">M</div>
-                <div class="overflow-hidden">
-                    <div class="text-xs font-bold text-white truncate">Musmert2027</div>
-                    <div class="text-[10px] text-emerald-400 flex items-center"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-1.5 animate-pulse"></span>Admin Oturumu</div>
-                </div>
-            </div>
-        </div>
-    </aside>
-
-    <!-- Sağ İçerik Alanı -->
-    <div class="flex-1 flex flex-col min-w-0 bg-[#313338]">
-        <!-- Üst Header -->
-        <header class="bg-[#2b2d31] border-b border-[#1f2023] px-6 py-4 flex justify-between items-center sticky top-0 z-40">
-            <div class="flex items-center space-x-3">
-                <span class="text-xs font-bold text-[#949ba4]">SUNUCU:</span>
-                <select class="input-dark text-xs px-3 py-1.5 rounded-lg font-semibold">
-                    <option>🌟 KALE Ana Sunucu (Aktif)</option>
-                    <option>🛡️ Moderasyon Test Sunucusu</option>
-                </select>
-            </div>
-            <div class="flex items-center space-x-4">
-                <div class="flex items-center space-x-2 bg-[#1e1f22] px-3.5 py-1.5 rounded-xl border border-[#383a40]">
-                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                    <span class="text-xs text-white font-medium">Altare Cloud: Çevrimiçi</span>
-                </div>
-            </div>
-        </header>
-
-        <!-- Dinamik Sayfa İçerikleri -->
-        <main class="flex-1 p-6 overflow-y-auto space-y-6">
-            
-            <!-- 1. GENEL BAKIŞ -->
-            <div id="page_home" class="space-y-6">
-                <div class="card-bg p-6 rounded-2xl space-y-3">
-                    <h1 class="text-xl font-bold text-white">KALE Bot Yönetim Paneline Hoş Geldiniz</h1>
-                    <p class="text-xs text-[#949ba4]">Bu panel üzerinden KALE botunun tüm modüllerini, komutlarını ve koruma filtrelerini doğrudan yönetebilir, Altare altyapısıyla anlık senkronizasyon sağlayabilirsiniz.</p>
-                </div>
-                <div class="grid grid-cols-1 sm:grid-cols-4 gap-4">
-                    <div class="card-bg p-5 rounded-2xl space-y-1">
-                        <div class="text-[11px] font-bold text-[#949ba4]">TOPLAM ÜYE</div>
-                        <div class="text-2xl font-bold text-white">1,540</div>
-                        <div class="text-[10px] text-emerald-400">↑ Son 24 saatte +18 katılım</div>
-                    </div>
-                    <div class="card-bg p-5 rounded-2xl space-y-1">
-                        <div class="text-[11px] font-bold text-[#949ba4]">AKTİF TICKET</div>
-                        <div class="text-2xl font-bold text-indigo-400">4 Talep</div>
-                        <div class="text-[10px] text-[#949ba4]">Destek hattı açık</div>
-                    </div>
-                    <div class="card-bg p-5 rounded-2xl space-y-1">
-                        <div class="text-[11px] font-bold text-[#949ba4]">UYARI SAYISI</div>
-                        <div class="text-2xl font-bold text-amber-400">12 Kayıt</div>
-                        <div class="text-[10px] text-amber-400">Otomatik mute devrede</div>
-                    </div>
-                    <div class="card-bg p-5 rounded-2xl space-y-1">
-                        <div class="text-[11px] font-bold text-[#949ba4]">KORUMA DURUMU</div>
-                        <div class="text-2xl font-bold text-emerald-400">Aktif</div>
-                        <div class="text-[10px] text-emerald-400">Anti-Raid korumalı</div>
-                    </div>
-                </div>
-
-                <!-- Canlı Log Terminali -->
-                <div class="card-bg p-6 rounded-2xl space-y-3">
-                    <h3 class="font-bold text-white text-sm flex items-center space-x-2">
-                        <i class="fa-solid fa-terminal text-[#5865f2]"></i>
-                        <span>Canlı Komut İletişim Terminali</span>
-                    </h3>
-                    <div id="terminalBox" class="bg-[#1e1f22] p-4 rounded-xl font-mono text-xs text-[#dbdee1] space-y-1.5 h-44 overflow-y-auto border border-[#383a40]">
-                        <div class="text-emerald-400">[SİSTEM] KALE Ultimate Command Center başarıyla yüklendi. Tüm modüller senkronize.</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 2. MODERASYON KOMUTLARI -->
-            <div id="page_mod" class="space-y-6 hidden">
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div class="card-bg p-5 rounded-2xl space-y-3">
-                        <div class="text-red-400 font-bold text-sm flex items-center space-x-2"><i class="fa-solid fa-user-slash"></i><span>Yasakla (!ban)</span></div>
-                        <input type="text" id="banId" placeholder="Kullanıcı ID" class="input-dark w-full p-2.5 rounded-xl text-xs">
-                        <input type="text" id="banReason" placeholder="Yasaklama Sebebi" class="input-dark w-full p-2.5 rounded-xl text-xs">
-                        <button onclick="triggerBotCmd('Ban', '!ban')" class="w-full py-2.5 bg-red-600 hover:bg-red-500 text-white rounded-xl text-xs font-semibold transition">Kullanıcıyı Banla</button>
-                    </div>
-                    <div class="card-bg p-5 rounded-2xl space-y-3">
-                        <div class="text-amber-400 font-bold text-sm flex items-center space-x-2"><i class="fa-solid fa-microphone-slash"></i><span>Sustur (!mute)</span></div>
-                        <input type="text" id="muteId" placeholder="Kullanıcı ID" class="input-dark w-full p-2.5 rounded-xl text-xs">
-                        <input type="text" id="muteTime" placeholder="Süre (Örn: 1h, 30m)" class="input-dark w-full p-2.5 rounded-xl text-xs">
-                        <button onclick="triggerBotCmd('Mute', '!mute')" class="w-full py-2.5 bg-amber-600 hover:bg-amber-500 text-white rounded-xl text-xs font-semibold transition">Süreli Sustur</button>
-                    </div>
-                    <div class="card-bg p-5 rounded-2xl space-y-3">
-                        <div class="text-blue-400 font-bold text-sm flex items-center space-x-2"><i class="fa-solid fa-user-xmark"></i><span>At / Uyarı (!kick)</span></div>
-                        <input type="text" id="kickId" placeholder="Kullanıcı ID" class="input-dark w-full p-2.5 rounded-xl text-xs">
-                        <input type="text" id="kickReason" placeholder="Sebep" class="input-dark w-full p-2.5 rounded-xl text-xs">
-                        <div class="grid grid-cols-2 gap-2">
-                            <button onclick="triggerBotCmd('Kick', '!kick')" class="py-2.5 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-xs font-semibold transition">Sunucudan At</button>
-                            <button onclick="triggerBotCmd('Warn', '!warn')" class="py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-semibold transition">Uyarı Ver</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 3. GÜVENLİK & KİLİT -->
-            <div id="page_prot" class="space-y-6 hidden">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="card-bg p-6 rounded-2xl space-y-4">
-                        <div class="text-red-400 font-bold text-md flex items-center space-x-2"><i class="fa-solid fa-lock"></i><span>Kanal Kilitleme (Lockdown)</span></div>
-                        <p class="text-xs text-[#949ba4]">Aktif kanalın yazışma izinlerini anında kapatır veya açar.</p>
-                        <div class="flex space-x-3">
-                            <button onclick="triggerBotCmd('Lockdown ON', '!lockdown on')" class="flex-1 py-3 bg-red-600 hover:bg-red-500 text-white rounded-xl text-xs font-semibold transition">Kanalı Kilitle</button>
-                            <button onclick="triggerBotCmd('Lockdown OFF', '!lockdown off')" class="flex-1 py-3 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-semibold transition">Kilidi Kaldır</button>
-                        </div>
-                    </div>
-                    <div class="card-bg p-6 rounded-2xl space-y-4">
-                        <div class="text-amber-400 font-bold text-md flex items-center space-x-2"><i class="fa-solid fa-shield-dog"></i><span>Anti-Raid Koruması</span></div>
-                        <p class="text-xs text-[#949ba4]">Bot koruma eşiklerini dinamik olarak yapılandırın.</p>
-                        <select class="input-dark w-full p-2.5 rounded-xl text-xs">
-                            <option>Maksimum Koruma (Sıkı Filtre + Anti-Bot)</option>
-                            <option>Normal Koruma (Standart AutoMod)</option>
-                            <option>Devre Dışı</option>
-                        </select>
-                        <button onclick="triggerBotCmd('Anti-Raid', 'Koruma ayarları güncellendi')" class="w-full py-2.5 bg-[#5865f2] hover:bg-[#4752c4] text-white rounded-xl text-xs font-semibold transition">Ayarları Kaydet</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 4. HOŞ GELDİN & ROL -->
-            <div id="page_welcome" class="space-y-6 hidden">
-                <div class="card-bg p-6 rounded-2xl space-y-4">
-                    <h3 class="font-bold text-white text-md">Hoş Geldin Mesajı ve Otomatik Rol</h3>
-                    <div class="space-y-3">
-                        <div>
-                            <label class="text-xs text-[#949ba4] block mb-1">Hoş Geldin Kanalı</label>
-                            <select class="input-dark w-full p-2.5 rounded-xl text-xs"><option>#hos-geldiniz</option></select>
-                        </div>
-                        <div>
-                            <label class="text-xs text-[#949ba4] block mb-1">Yeni Üyelere Verilecek Otomatik Rol</label>
-                            <select class="input-dark w-full p-2.5 rounded-xl text-xs"><option>Üye (Kayıtsız)</option></select>
-                        </div>
-                        <button onclick="triggerBotCmd('Welcome Config', 'Hoş geldin ayarları güncellendi')" class="px-5 py-2.5 bg-[#5865f2] hover:bg-[#4752c4] text-white rounded-xl text-xs font-semibold transition">Kaydet</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 5. SEVİYE SİSTEMİ -->
-            <div id="page_level" class="space-y-6 hidden">
-                <div class="card-bg p-6 rounded-2xl space-y-4">
-                    <h3 class="font-bold text-white text-md">Seviye (XP) ve Sıralama Sistemi</h3>
-                    <div class="flex items-center justify-between p-3 bg-[#1e1f22] rounded-xl border border-[#383a40]">
-                        <span class="text-xs text-white font-medium">Seviye Sistemi Durumu</span>
-                        <button onclick="triggerBotCmd('Level System', 'Seviye sistemi açıldı/kapandı')" class="px-4 py-1.5 bg-emerald-600 text-white text-xs rounded-lg">Aktif</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 6. TICKET SİSTEMİ -->
-            <div id="page_ticket" class="space-y-6 hidden">
-                <div class="card-bg p-6 rounded-2xl space-y-4">
-                    <div class="flex justify-between items-center">
-                        <h3 class="font-bold text-white text-md">Aktif Destek Talepleri</h3>
-                        <button onclick="triggerBotCmd('Ticket Panel', 'Panel kanala kuruldu')" class="px-4 py-2 bg-emerald-600 text-white rounded-xl text-xs font-semibold">Panel Kur</button>
-                    </div>
-                    <table class="w-full text-left text-xs">
-                        <thead class="bg-[#1e1f22] text-[#949ba4] border-b border-[#383a40]">
-                            <tr><th class="p-3">Talep ID</th><th class="p-3">Kullanıcı</th><th class="p-3">Durum</th><th class="p-3 text-right">Eylem</th></tr>
-                        </thead>
-                        <tbody class="divide-y divide-[#383a40]">
-                            <tr>
-                                <td class="p-3 font-mono text-indigo-400">#tkt-7712</td>
-                                <td class="p-3 text-white">Musmert#2027</td>
-                                <td class="p-3"><span class="px-2 py-0.5 bg-emerald-500/20 text-emerald-400 rounded">Açık</span></td>
-                                <td class="p-3 text-right"><button onclick="triggerBotCmd('Close Ticket', 'Ticket kapatıldı')" class="px-2 py-1 bg-red-500/10 text-red-400 rounded">Kapat</button></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- 7. MÜZİK & SOUNDBOARD -->
-            <div id="page_music" class="space-y-6 hidden">
-                <div class="card-bg p-6 rounded-2xl space-y-4">
-                    <h3 class="font-bold text-white text-md">Müzik Botu Kontrol Paneli</h3>
-                    <div class="flex gap-3">
-                        <input type="text" placeholder="YouTube Şarkı Linki" class="input-dark flex-1 p-2.5 rounded-xl text-xs">
-                        <button onclick="triggerBotCmd('Play', '!play')" class="px-5 py-2.5 bg-indigo-600 text-white rounded-xl text-xs font-semibold">Oynat</button>
-                    </div>
-                    <div class="grid grid-cols-4 gap-3">
-                        <button onclick="triggerBotCmd('Pause', '!pause')" class="p-3 bg-[#1e1f22] rounded-xl text-xs border border-[#383a40]">⏸️ Duraklat</button>
-                        <button onclick="triggerBotCmd('Resume', '!resume')" class="p-3 bg-[#1e1f22] rounded-xl text-xs border border-[#383a40]">▶️ Devam Et</button>
-                        <button onclick="triggerBotCmd('Skip', '!skip')" class="p-3 bg-[#1e1f22] rounded-xl text-xs border border-[#383a40]">⏭️ Geç</button>
-                        <button onclick="triggerBotCmd('Stop', '!stop')" class="p-3 bg-[#1e1f22] text-red-400 rounded-xl text-xs border border-[#383a40]">⏹️ Bitir</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 8. BOT SİSTEM AYARLARI -->
-            <div id="page_settings" class="space-y-6 hidden">
-                <div class="card-bg p-6 rounded-2xl space-y-4">
-                    <h3 class="font-bold text-white text-md">Bot Durum Mesajı ve Aktivite</h3>
-                    <div class="grid grid-cols-2 gap-4">
-                        <select class="input-dark p-2.5 rounded-xl text-xs"><option>Oynuyor (Playing)</option><option>İzliyor (Watching)</option></select>
-                        <input type="text" value="Nexus Enterprise | KALE v2.0" class="input-dark p-2.5 rounded-xl text-xs">
-                    </div>
-                    <button onclick="triggerBotCmd('Bot Status', 'Durum güncellendi')" class="w-full py-2.5 bg-[#5865f2] text-white rounded-xl text-xs font-semibold">Uygula</button>
-                </div>
-            </div>
-
-        </main>
+  <header class="hero">
+    <h1>Sunucunun kalesi.</h1>
+    <p>Moderasyon, seviye, müzik, çekiliş ve destek paneli tek botta. Aşağıdan bir komut ara ya da Discord ile girip sunucularını gör.</p>
+    <div class="palet">
+      <label><b>/</b><input id="ara" type="search" placeholder="komut ara: ban, çal, seviye…" autocomplete="off" aria-label="Komut ara"></label>
+      <ul id="sonuc"></ul>
     </div>
+  </header>
 
-    <script>
-        function switchPage(page) {
-            ['home', 'mod', 'prot', 'welcome', 'level', 'ticket', 'music', 'settings'].forEach(p => {
-                document.getElementById('page_' + p).classList.add('hidden');
-                document.getElementById('nav_' + p).className = "w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-[#949ba4] hover:bg-[#35373c] hover:text-white text-xs font-semibold transition";
-            });
-            document.getElementById('page_' + page).classList.remove('hidden');
-            document.getElementById('nav_' + page).className = "w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl bg-[#5865f2] text-white text-xs font-semibold transition shadow-md";
-        }
+  <section id="panel" hidden>
+    <h2>Sunucuların</h2>
+    <p class="alt">Yönetici olduğun sunucular. Botu ekli olanları yönetebilir, olmayanlara botu ekleyebilirsin.</p>
+    <div id="sunucular" class="sunucular"></div>
+  </section>
 
-        function triggerBotCmd(type, cmd) {
-            const time = new Date().toLocaleTimeString();
-            const box = document.getElementById('terminalBox');
-            const row = document.createElement('div');
-            row.className = 'text-indigo-300';
-            row.innerText = `[${time}] [API İLETİŞİM] İşlem: ${type} | Komut: ${cmd}`;
-            box.prepend(row);
-            alert(`İşlem bota iletildi: ${type} (${cmd})`);
-        }
-    </script>
+  <section id="komutlar">
+    <h2>Tüm komutlar</h2>
+    <p class="alt" id="sayi"></p>
+    <div class="chips" id="chips"></div>
+    <div class="liste" id="liste"></div>
+  </section>
+
+  <footer>KALE açık kaynaklıdır. <a href="#" id="gh">Kodu GitHub'da gör</a></footer>
+</div>
+
+<dialog id="dlg"><h3 id="dbaslik"></h3><p class="alt">Bu sunucuyu kurmak için Discord'da şu komutları kullan.</p><div class="liste" id="dliste"></div><button class="btn" onclick="dlg.close()">Kapat</button></dialog>
+
+<script>
+/* ====== AYARLAR: bunları kendine göre doldur ====== */
+const CLIENT_ID = "BURAYA_BOT_CLIENT_ID";                 // Developer Portal > General Information > Application ID
+const API = "https://BURAYA-RENDER-ADRESIN.onrender.com"; // botun çalıştığı adres (keep_alive sunucusu)
+const GITHUB = "https://github.com/KULLANICI/DEPO";
+const IZINLER = 8;                                        // bot izin sayısı (8 = Yönetici)
+/* ================================================== */
+
+// [kategori, ad, açıklama, yetki gerekir mi]
+const K = [
+["Moderasyon","ban","Üyeyi sunucudan kalıcı olarak yasaklar.",1],
+["Moderasyon","unban","Yasaklı üyenin banını ID ile kaldırır.",1],
+["Moderasyon","kick","Üyeyi sunucudan atar.",1],
+["Moderasyon","timeout","Üyeyi belirli süre susturur.",1],
+["Moderasyon","timeout-kaldır","Üyenin susturmasını kaldırır.",1],
+["Moderasyon","lockdown","Kanalı sohbete kapatır.",1],
+["Moderasyon","unlock","Kilitli kanalı açar.",1],
+["Moderasyon","yavaş-mod","Kanalın yavaş mod süresini ayarlar.",1],
+["Moderasyon","sil","Girilen miktarda mesajı temizler.",1],
+["Moderasyon","isim-değiştir","Üyenin takma adını değiştirir.",1],
+["Moderasyon","rol-düzenle","Üyeye ya da tüm botlara rol ekler/kaldırır.",1],
+["Uyarı","warn","Üyeye uyarı verir. Her 3 uyarıda otomatik susturur.",1],
+["Uyarı","uyarılar","Üyenin uyarılarını listeler.",1],
+["Uyarı","uyarı-sil","ID ile tek bir uyarıyı siler.",1],
+["Uyarı","uyarı-temizle","Üyenin tüm uyarılarını siler.",1],
+["Ayarlar","log-kanal-ayarla","Log kayıtlarının gideceği kanalı seçer.",1],
+["Ayarlar","hoşgeldin-kanal-ayarla","Karşılama mesajı kanalını seçer.",1],
+["Ayarlar","otorol-ayarla","Katılan herkese verilecek rolü seçer.",1],
+["Ayarlar","ayarlar","Sunucunun mevcut bot ayarlarını gösterir.",1],
+["Destek","destek-panel-ayarla","Destek (ticket) sisteminin tüm ayarlarını açar.",1],
+["Seviye","seviye","Resimli seviye kartını gösterir."],
+["Seviye","liderlik-tablosu","En çok XP'ye sahip üyeleri listeler."],
+["Seviye","seviye-rolü-ekle","Bir seviyeye ulaşınca verilecek rolü bağlar.",1],
+["Seviye","seviye-rolleri-otomatik-oluştur","Emojili seviye rollerini kendisi oluşturur.",1],
+["Seviye","seviye-rolü-sil","Seviye rolü kaydını kaldırır.",1],
+["Seviye","seviye-kanal-ayarla","Seviye atlama mesajlarının kanalını seçer.",1],
+["Seviye","seviye-sistemi","Seviye bildirimlerini açar/kapatır.",1],
+["Müzik","çal","YouTube'dan şarkı arar, çalar veya kuyruğa ekler."],
+["Müzik","duraklat","Çalan şarkıyı duraklatır."],
+["Müzik","devam-ettir","Duraklatılmış şarkıyı sürdürür."],
+["Müzik","geç","Çalan şarkıyı atlar."],
+["Müzik","kuyruk","Sıradaki şarkıları listeler."],
+["Müzik","ayrıl","Ses kanalından ayrılır, kuyruğu temizler."],
+["Ses kutusu","ses-ekle","Kalıcı bir ses dosyası ekler.",1],
+["Ses kutusu","ses-çal","Eklenmiş sesi ses kanalında çalar."],
+["Ses kutusu","ses-liste","Eklenmiş tüm sesleri listeler."],
+["Ses kutusu","ses-sil","Eklenmiş bir sesi kaldırır.",1],
+["Çekiliş","çekiliş-başlat","Butonla katılımlı yeni çekiliş başlatır.",1],
+["Çekiliş","çekiliş-bitir","Çekilişi hemen sonlandırır.",1],
+["Çekiliş","çekiliş-yeniden-çek","Biten çekiliş için yeni kazanan seçer.",1],
+["Anti-raid","antiraid-ayarla","Raid korumasını açar/kapatır, eşiği ayarlar.",1],
+["Anti-raid","antiraid-sıfırla","Raid modunu kapatır.",1],
+["Karşılama","karşılama-önizle","Karşılama kartının önizlemesini gösterir.",1],
+["Karşılama","karşılama-renk-ayarla","Kartın rengini ayarlar.",1],
+["Karşılama","karşılama-kart","Resimli kartı açar/kapatır.",1],
+["Rol paneli","rol-panel-oluştur","Butonla rol alma paneli oluşturur.",1],
+["Rol paneli","rol-panel-sil","Rol panelini siler.",1],
+["İstatistik","istatistik-panel","Kendiliğinden güncellenen istatistik panelini kurar.",1],
+["İstatistik","istatistik-kapat","İstatistik panelini kapatır.",1],
+["Bilgi","yapımcı","Bot yapımcısını gösterir."],
+["Bilgi","ping","Botun gecikmesini gösterir."],
+["Bilgi","yardım","Komut listesini gösterir."],
+["Bilgi","kullanıcı-bilgi","Üyenin hesap ve sunucu bilgilerini gösterir."],
+["Bilgi","sunucu-hakkında-herşey","Sunucu istatistikleri ve kuralları."],
+["Bilgi","sunucubilgi","Sunucunun kısa istatistiklerini getirir."],
+["Bilgi","kurallar","Sunucu kurallarını kanala gönderir.",1]
+];
+const KURULUM = ["Ayarlar","Destek","Seviye","Çekiliş","Anti-raid","Karşılama","Rol paneli","İstatistik","Ses kutusu"];
+
+const $ = s => document.querySelector(s);
+function h(tag, attrs = {}, ...kids){
+  const e = document.createElement(tag);
+  for (const [k,v] of Object.entries(attrs)) k in e ? e[k] = v : e.setAttribute(k, v);
+  e.append(...kids.filter(x => x != null));
+  return e;
+}
+
+/* ---- komut listesi ---- */
+let secili = "Hepsi";
+const kategoriler = ["Hepsi", ...new Set(K.map(k => k[0]))];
+function komutKarti(k){
+  return h("div",{className:"kom"}, k[3] ? h("span",{className:"rozet",textContent:"yetki gerekir"}) : null,
+    h("code",{textContent:"/"+k[1]}), h("p",{textContent:k[2]}));
+}
+function listeyiCiz(){
+  const L = $("#liste"); L.replaceChildren(...K.filter(k => secili==="Hepsi"||k[0]===secili).map(komutKarti));
+  $("#sayi").textContent = K.length + " komut. Sunucuda / yazıp seçerek kullanılır.";
+  $("#chips").replaceChildren(...kategoriler.map(c =>
+    h("button",{className:"chip",type:"button",textContent:c,"aria-pressed":String(c===secili),onclick(){secili=c;listeyiCiz()}})));
+}
+listeyiCiz();
+
+/* ---- hero arama ---- */
+function aramaCiz(){
+  const q = $("#ara").value.trim().toLocaleLowerCase("tr").replace(/^\//,"");
+  const bul = K.filter(k => !q || k[1].toLocaleLowerCase("tr").includes(q) || k[2].toLocaleLowerCase("tr").includes(q)).slice(0,30);
+  $("#sonuc").replaceChildren(...(bul.length ? bul.map(k =>
+    h("li",{onclick(){secili=k[0];listeyiCiz();$("#komutlar").scrollIntoView()}}, h("strong",{textContent:"/"+k[1]}), h("span",{textContent:k[2]})))
+    : [h("li",{textContent:"Eşleşen komut yok. Başka bir kelime dene."})]));
+}
+$("#ara").addEventListener("input", aramaCiz); aramaCiz();
+
+/* ---- Discord girişi (implicit grant: statik sitede çalışır) ---- */
+const YONLENDIR = location.origin + location.pathname;
+const girisUrl = "https://discord.com/oauth2/authorize?" + new URLSearchParams({
+  client_id: CLIENT_ID, response_type: "token", scope: "identify guilds", redirect_uri: YONLENDIR, prompt: "none"});
+const davetUrl = id => "https://discord.com/oauth2/authorize?" + new URLSearchParams({
+  client_id: CLIENT_ID, scope: "bot applications.commands", permissions: IZINLER,
+  ...(id ? {guild_id: id, disable_guild_select: "true"} : {})});
+
+$("#gh").href = GITHUB;
+const m = new URLSearchParams(location.hash.slice(1));
+if (m.get("access_token")){
+  try { sessionStorage.setItem("tok", m.get("access_token")); } catch {}
+  history.replaceState(null, "", location.pathname);
+}
+const token = (() => { try { return sessionStorage.getItem("tok"); } catch { return null; } })();
+
+function girisButonlari(){
+  $("#hesap").replaceChildren(
+    h("a",{className:"btn sade",href:davetUrl(),textContent:"Botu ekle"}),
+    " ",
+    h("a",{className:"btn",href:girisUrl,textContent:"Discord ile giriş"}));
+}
+async function discord(yol){
+  const r = await fetch("https://discord.com/api/v10"+yol,{headers:{Authorization:"Bearer "+token}});
+  if (!r.ok) throw new Error(r.status);
+  return r.json();
+}
+function cikis(){ try{sessionStorage.removeItem("tok")}catch{} location.reload(); }
+
+function sunucuKarti(g, botVar){
+  const ikon = g.icon ? h("img",{src:`https://cdn.discordapp.com/icons/${g.id}/${g.icon}.png?size=128`,alt:""})
+                      : h("div",{className:"ik",textContent:g.name.slice(0,1).toUpperCase()});
+  const durum = botVar === true ? h("small",{className:"var",textContent:"Bot ekli"})
+              : botVar === false ? h("small",{textContent:"Bot ekli değil"}) : h("small",{textContent:"Bot durumu alınamadı"});
+  const eylem = botVar === true
+    ? h("button",{className:"btn",type:"button",textContent:"Kurulum",onclick(){kurulumAc(g)}})
+    : h("a",{className:"btn sade",href:davetUrl(g.id),textContent:"Botu ekle"});
+  return h("div",{className:"sun"}, ikon, h("div",{}, h("b",{textContent:g.name}), durum), eylem);
+}
+function kurulumAc(g){
+  $("#dbaslik").textContent = g.name;
+  $("#dliste").replaceChildren(...K.filter(k => k[3] && KURULUM.includes(k[0])).map(komutKarti));
+  $("#dlg").showModal();
+}
+
+async function panel(){
+  try{
+    const [ben, sunucular] = await Promise.all([discord("/users/@me"), discord("/users/@me/guilds")]);
+    $("#hesap").replaceChildren(h("span",{className:"profil"},
+      ben.avatar ? h("img",{src:`https://cdn.discordapp.com/avatars/${ben.id}/${ben.avatar}.png?size=64`,alt:""}) : null,
+      h("b",{textContent:ben.global_name || ben.username}),
+      h("button",{className:"btn sade",type:"button",textContent:"Çıkış",onclick:cikis})));
+    const yonetilen = sunucular.filter(g => g.owner || (BigInt(g.permissions) & 8n) !== 0n);
+    let botlu = null;
+    try{
+      const r = await fetch(API+"/api/mutual",{method:"POST",headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({ids:yonetilen.map(g=>g.id)})});
+      botlu = new Set((await r.json()).ids.map(String));
+    }catch{}
+    $("#panel").hidden = false;
+    const kutu = $("#sunucular");
+    if (!yonetilen.length){
+      kutu.replaceChildren(h("div",{className:"bos",textContent:"Yönetici olduğun bir sunucu bulunamadı."}));
+      return;
+    }
+    yonetilen.sort((a,b) => (botlu?.has(b.id)||0) - (botlu?.has(a.id)||0));
+    kutu.replaceChildren(...yonetilen.map(g => sunucuKarti(g, botlu ? botlu.has(g.id) : undefined)));
+    $("#panel").scrollIntoView();
+  }catch{
+    try{sessionStorage.removeItem("tok")}catch{}
+    girisButonlari();
+  }
+}
+token ? panel() : girisButonlari();
+</script>
 </body>
 </html>
